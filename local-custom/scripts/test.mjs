@@ -8,6 +8,7 @@ const tests=[...(await fs.readdir(new URL('../tests/',import.meta.url))).filter(
   'package/dist-server/server/modules/file-tree/tests/file-tree.service.test.js',
   'package/dist-server/server/modules/providers/tests/provider-token-usage.service.test.js',
   'package/dist-server/server/modules/providers/tests/provider-capabilities.service.test.js',
+  'package/dist-server/server/modules/providers/tests/codex-approval.test.js',
   'package/dist-server/server/modules/providers/tests/codex-liveness.test.js',
   'package/dist-server/server/modules/websocket/tests/chat-background-subscribe.test.js'];
 const child=spawn(process.execPath,['--test',...tests],{cwd:root,env:process.env,stdio:'inherit'});

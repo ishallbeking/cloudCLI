@@ -42,7 +42,7 @@
     },
     {
       "path": "server/modules/websocket/services/chat-websocket.service.ts",
-      "sha256": "7952b34b3a643be38391aa5a761fb3bff6b372826a39470125380fc08f16d532",
+      "sha256": "9c9ac914fd47da37ab2089eefa12616aa1e8f313225ce6594e112b8c84c91239",
       "upstreamSha256": "37c2eaaaa7fed5a349fb067fde856a324fe7534d4e402866c8213766b5faf525"
     },
     {
@@ -212,7 +212,7 @@
     },
     {
       "path": "dist-server/server/modules/websocket/services/chat-websocket.service.js",
-      "sha256": "8a5e02fbb7c0fcb3727d26c9438e8ae658d7185235a2eca213024b92f7418204",
+      "sha256": "9033c6a914b24248c2fb55fb4f96a693863c613967095968a61942a7e44220e3",
       "upstreamSha256": "58ec3d159405399fedca9f450f81e64818bfba1e89e78b7c6bf73e28ec02fb11"
     },
     {
@@ -374,6 +374,36 @@
       "path": "dist-server/server/modules/providers/tests/codex-liveness.test.js",
       "sha256": "f3843b93412d2260ccfdd162c4c846e6836a823b933f18e977cc7d53d939c8be",
       "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/services/codex-approval.service.ts",
+      "sha256": "26323460567b22f4d8449d5faf173e049746de9339c275b44c39720b76cf9160",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/tests/codex-approval.test.ts",
+      "sha256": "1022c09e39cec340b5eff5bae645c3555e878ecbfaf95368213f62c667facceb",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/index.ts",
+      "sha256": "b4a4048c313b514b78d3f8f539546bb0aa1a7fd846e8efb2f46708f208023d4c",
+      "upstreamSha256": "b46ea83f103d93d97adeb390b32a8d266e7a8671693dd0cd906e59560e92d4b5"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/codex-approval.service.js",
+      "sha256": "d32cebe52ba0252b93918f3bf5cb849b6e2ae7252767b30d1866407b99a10177",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/codex-approval.test.js",
+      "sha256": "0a6713c4c4aba8e06a839a3b1c99e9b712f8826195a8f6cbc3c68d6dc220fede",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/index.js",
+      "sha256": "9dd08a5242a10dbd02d328793c88017c22581d0a7ebf09327333bb2e971b356f",
+      "upstreamSha256": "48355188536979219c91843db69f2976008cf801757359f54cd5f233042bfbc8"
     }
   ]
 }

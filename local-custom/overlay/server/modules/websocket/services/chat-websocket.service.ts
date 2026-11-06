@@ -3,7 +3,7 @@ import path from 'node:path';
 import type { WebSocket } from 'ws';
 
 import { sessionsDb } from '@/modules/database/index.js';
-import { providerModelsService, sessionsService } from '@/modules/providers/index.js';
+import { providerModelsService, sessionsService, codexApprovalService } from '@/modules/providers/index.js';
 import { chatRunRegistry } from '@/modules/websocket/services/chat-run-registry.service.js';
 import { connectedClients, WS_OPEN_STATE } from '@/modules/websocket/services/websocket-state.service.js';
 import {
@@ -526,6 +526,7 @@ async function handleChatSubscribe(
 
     // The native Codex daemon outlives this WebUI process and also serves the CLI.
     const session = sessionsDb.getSessionById(sessionId);
+    if (session?.provider === 'codex') await codexApprovalService.watchSession(sessionId, ws);
     const external = !chatRunRegistry.isProcessing(sessionId) && session?.provider === 'codex'
       ? (await sessionsService.listRunningSessions()).find(entry => entry.sessionId === sessionId)
       : undefined;
@@ -545,7 +546,7 @@ async function handleChatSubscribe(
 
     // Pending approvals are tracked under the app session id inside the
     // Claude runtime, so they can be looked up directly.
-    const pendingPermissions = dependencies.runtime.getPendingApprovalsForSession(sessionId);
+    const pendingPermissions = [...dependencies.runtime.getPendingApprovalsForSession(sessionId), ...codexApprovalService.listPending(sessionId)];
 
     sendJson(ws, {
       kind: 'chat_subscribed',
@@ -580,12 +581,13 @@ function handlePermissionResponse(data: AnyRecord, dependencies: ChatWebSocketDe
     return;
   }
 
-  dependencies.runtime.resolveToolApproval(data.requestId, {
+  const decision = {
     allow: Boolean(data.allow),
     updatedInput: data.updatedInput,
     message: typeof data.message === 'string' ? data.message : undefined,
     rememberEntry: data.rememberEntry,
-  });
+  };
+  if (!codexApprovalService.resolve(data.requestId, decision)) dependencies.runtime.resolveToolApproval(data.requestId, decision);
 }
 
 /**
@@ -720,6 +722,7 @@ export function handleChatConnection(
 
   ws.on('close', () => {
     console.log('[INFO] Chat client disconnected');
+    codexApprovalService.unwatchConnection(ws);
     connectedClients.delete(ws);
   });
 }
