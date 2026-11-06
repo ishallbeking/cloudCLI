@@ -1,0 +1,349 @@
+{
+  "package": "@cloudcli-ai/cloudcli",
+  "version": "1.37.7",
+  "gitHead": "7e7452219d788847b607d369728085995db719f1",
+  "url": "https://registry.npmjs.org/@cloudcli-ai/cloudcli/-/cloudcli-1.37.7.tgz",
+  "integrity": "sha512-+O+hdYoYkYuDAzAu4V5g7ev59akO0/y3JZLz8IYgoeENn3ej8Wx2MdNuwS+3NwxGEJlCK2/n5L/qwPVQaSBb1g==",
+  "overlay": [
+    {
+      "path": "server/modules/file-tree/file-tree.service.ts",
+      "sha256": "176c79d10eca4773820468f686a0ee99e1f4c2f72507fb5577e64914b4332be6",
+      "upstreamSha256": "66b39d22ff6f4934719765e3171d1cd551afa9773e2e853a454efc4c17724796"
+    },
+    {
+      "path": "server/modules/file-tree/file-tree-copy.js",
+      "sha256": "df2d253a17e9e1e489c0610ee913fe60ee6d622e6cc63d839c0e1c5c0da35d49",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/file-tree/file-tree.module.ts",
+      "sha256": "e0534f4392317d128fde69b48e2b133cb2381810989c7333913d34e183edbd99",
+      "upstreamSha256": "9a8863bff09ca799ad65523a9fd4a7b6d2fdc450fb0fc1029cb719db2efa04a5"
+    },
+    {
+      "path": "server/modules/file-tree/file-tree.routes.ts",
+      "sha256": "ebd46a8448b76323203641f0c0bf76286d49a8e4ee4ff68c10b5ba7fcb80dd25",
+      "upstreamSha256": "9e172c365d0de3612ba1af18e3527049884a92828d78ee0ec2c0736aa8443b0f"
+    },
+    {
+      "path": "server/modules/file-tree/tests/file-tree.routes.test.ts",
+      "sha256": "f22c40544397056406ddb697b769eb094465a009025a69830750c87c4f1f4bb8",
+      "upstreamSha256": "111fed2fe4a2a96c99530ff3d343c19b51d73e6620cd661ab563897a31762414"
+    },
+    {
+      "path": "server/modules/websocket/services/chat-run-registry.service.ts",
+      "sha256": "46913febf00fefb75cea5b207b166a9255cccb04fe6f605c7b1648c1a44f3cd3",
+      "upstreamSha256": "9dabfdaf4c16485027dba69cd62efbeee11b51f209b204c24ae99ca3d321535e"
+    },
+    {
+      "path": "server/modules/websocket/services/chat-session-writer.service.ts",
+      "sha256": "a266590ef22f2121dcab90fcfd7e7eb7343c3f0072998538eb7137e392bc4652",
+      "upstreamSha256": "11cb46d355b3640ff6e665c9b29581f96b4c168d76b1a95e1dcce007f9976de2"
+    },
+    {
+      "path": "server/modules/websocket/services/chat-websocket.service.ts",
+      "sha256": "55fa9618c45d5fa8b8e55e2e71dbe08021ce3f866ae3af804519ca41b3bc3d70",
+      "upstreamSha256": "37c2eaaaa7fed5a349fb067fde856a324fe7534d4e402866c8213766b5faf525"
+    },
+    {
+      "path": "server/modules/websocket/tests/chat-background-subscribe.test.ts",
+      "sha256": "f51fbbd2b150adf40fb6e095108d4eb5c034fbc9808d0b22a21402d45e62b57a",
+      "upstreamSha256": "e2bcee673467ef9962d858e7a4d88d5897bc7a41f2084cc1c070d5cfac9fad67"
+    },
+    {
+      "path": "server/modules/providers/conversation-navigation.routes.js",
+      "sha256": "86e6ad1289a6c37711494289cc1e0e3d1f98d21265940cd9fa19ae68992565b5",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/provider.routes.ts",
+      "sha256": "d0cbc8518577aa15cce4056cf93e6e0c10f63677f5be435bfb464612089d881e",
+      "upstreamSha256": "176ac02b92b88e62861a7d58e7f0d9ba55ef9e4caeb91bd02ad705d79178a4aa"
+    },
+    {
+      "path": "server/modules/providers/services/session-conversations-search.service.ts",
+      "sha256": "6c3ff07a8f906a26ddd150d22e20857be8b6bd0fd8570f5742f451ed63242241",
+      "upstreamSha256": "1f46b98acfed74ed456571fff4ec592a187751c458eca1b6ca2a78de389f2e2f"
+    },
+    {
+      "path": "server/modules/providers/services/provider-capabilities.service.ts",
+      "sha256": "54e5d75a4021ce7849fb2b29783eedf1705132fc42bceea77695be5100c35a22",
+      "upstreamSha256": "2387a6ba51713a7f5a8419ecbe8ad2dbf129f620cd1750bde5c0edfd56e67787"
+    },
+    {
+      "path": "server/modules/providers/services/provider-token-usage.service.ts",
+      "sha256": "e98e430224e1a6c45384de6d273245a5738632a56f3ab9c9cd71376a74c3d563",
+      "upstreamSha256": "ce75104c0a6a8586b34dc0a0353dd55f39ddada61b6a406acebd5ae16d41e9f2"
+    },
+    {
+      "path": "server/modules/providers/services/sessions-watcher.service.ts",
+      "sha256": "2498398abe074d504b8e57fa05843aec829a9113a955e9969c8dc3ffd8cdabd9",
+      "upstreamSha256": "b095a5fc697a8f1fbb4334e4d54ea376b66ff12dcddac3cc83d13dcf69f173bb"
+    },
+    {
+      "path": "server/modules/providers/services/conversation-navigation.js",
+      "sha256": "18f22cb6480022c16c80cb6f288eccb54af6287c1f4574f9ef25f543843cb51b",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/tests/codex-runtime.test.ts",
+      "sha256": "02a87fe8ce80fe1fad02acbb702c2784dea630cda629fbc3ffd940c247b91739",
+      "upstreamSha256": "37300805be0d059cd547bf126924878cb61610f16bc1f89287db6fbfc539d1a5"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-runtime.provider.ts",
+      "sha256": "d476bb4c1d2ec61e80bee7535ac2d88739a571bbe126ce68a568b59426971a75",
+      "upstreamSha256": "69f6fdb647a2551a511a4ac43b79d983d39414705647bd1769148db4bba258c1"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-rollout-files.js",
+      "sha256": "97cab45d34c68d254b553627530410a37c22f07c7c67667fb18ea45e228c3a13",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-app-server.client.ts",
+      "sha256": "6e24b5deb9802ff24f54761cd470e0df3afd3ae60d9479635c81d217c916fa7e",
+      "upstreamSha256": "52539ced1d09cc4dc3cfdbbd8c2c02d6237f87f0e212a234ccb258c90b9e7b8b"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-models.provider.ts",
+      "sha256": "276d95b996c185064c4a96c30268c0fc573c9e8f4ad3edb66850596f4ab84965",
+      "upstreamSha256": "9d9efc1869d10a3ae01b2fb661b05b28a2003f6c28f299325a7c3e9b29f78c13"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-session-synchronizer.provider.js",
+      "sha256": "f7aa9ec8c81d84af8993697f8861bd8ea81244563fadd830515033414d5bb4d7",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-history-synchronizer.js",
+      "sha256": "d52bf7bfbaf160304b5d396281390fa2df1bc212743f1f54330752e9d66cba11",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-interactive-runtime.js",
+      "sha256": "48c1d2324f83a8ffa9288e4a013f1816b088eb0f9501afc4af12aba8c9fd1019",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-rpc.js",
+      "sha256": "d2da045a75131e37da7428ddb7c917c69b25dfaecd9ac40facdcc7553c284a76",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-sessions.provider.ts",
+      "sha256": "20fd81e7bad6b3ca07cee41f443e75ce274aabf512530f6f811163b2b8a0c69f",
+      "upstreamSha256": "8c4345d43192932c1ae5e7a9da4cbe7e8fd05820fbd318d59c698a3639b3a1d6"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-context-usage.js",
+      "sha256": "8fad3531708dca071813c611f2e017f1be388d228ffa13b0beb7e4a9a1c677a9",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-async-questions.js",
+      "sha256": "571d236ec57ddefb4b2fc9cb6f0bc4453a1b383d3ea4e25c2fde8e851c6b110e",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-question.routes.js",
+      "sha256": "2b71ecebd5a3c645a09e93f0f1e4260f05abb1b7bc8956d7024b11b1afa49fb3",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-session-synchronizer.provider.ts",
+      "sha256": "4457aadc24062e7a5d4ba6a841c708e0ad1e03b129fc612733909823e2ab2d07",
+      "upstreamSha256": "90530a8782685c8713f983df287855a57d8449e49669bc0d31a601ac43a76b7b"
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-auth.provider.ts",
+      "sha256": "d33349461e69e99647117730e232fe701e92435fe8bbfa3816131ad1e154a3f0",
+      "upstreamSha256": "c25e58b8bff9f65052119507cebbde0907f70ddb4d8f4df06005f82881e584f6"
+    },
+    {
+      "path": "server/modules/database/connection.ts",
+      "sha256": "950d28af53ec2ebc72015a78c9d5c8467fd396bebb654179289f0641bfb38e6c",
+      "upstreamSha256": "2492624150911a22dca760ebab1068aebb95cd509b60e668bfe737daa4c93595"
+    },
+    {
+      "path": "server/modules/database/repositories/app-config.ts",
+      "sha256": "5e27bed754cb99178dcaca130364bf57872824ce1797652b31207e6004f17eeb",
+      "upstreamSha256": "1955cee88117f5c463d40a88f6d1ac060a906b30ccaffd17c37f0bbdd344bff3"
+    },
+    {
+      "path": "server/shared/types.ts",
+      "sha256": "154e8056afe27e4f16c889ff2dfe0cb27420d519b36c40e69788681f3856a87a",
+      "upstreamSha256": "2e527e7a528e23a829c7a7df0e602224e9d37dab4da8a2152949d7e1ae38de92"
+    },
+    {
+      "path": "dist-server/server/modules/file-tree/file-tree.module.js",
+      "sha256": "fe4cccfd950312043da99f3cccbb7556622e0bce25fff824054344c0a8ce7833",
+      "upstreamSha256": "5e123b54c24606576cde939f1c1f2373e7eb470c127eeb97c8216af1008196d6"
+    },
+    {
+      "path": "dist-server/server/modules/file-tree/file-tree-copy.js",
+      "sha256": "df2d253a17e9e1e489c0610ee913fe60ee6d622e6cc63d839c0e1c5c0da35d49",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/file-tree/file-tree.routes.js",
+      "sha256": "523d38dab07d4f74d1671a5af8f9de141ef4fa580431b68d2541bed78ac6cfc8",
+      "upstreamSha256": "38ef84a6ad81acb2d5d999ead87fc9ce296da2815a4ff3af63bd2eab7af21079"
+    },
+    {
+      "path": "dist-server/server/modules/file-tree/file-tree.service.js",
+      "sha256": "c673e5b9b58525b559ddc049e1e05f47961c6b4cb396086d1c9309852e2f4dd8",
+      "upstreamSha256": "7435f95dd2b3118f049059cc427a9bd6dd4073ae217b1dd5e2229872dcba33ce"
+    },
+    {
+      "path": "dist-server/server/modules/file-tree/tests/file-tree.routes.test.js",
+      "sha256": "ba083ec7fa8b73fd6e6a53aafcae15d5adb5d45afc1442315ab2de1d81ba195a",
+      "upstreamSha256": "6d48ac3335dba91b947100bd7c813ddb7a3b5bffca6ea4b592ceedf687f2cabf"
+    },
+    {
+      "path": "dist-server/server/modules/websocket/services/chat-run-registry.service.js",
+      "sha256": "fc0935d61181d6e9578b5d86342a0d280f33bcfcfc0c6b480b0684a8cbf5085f",
+      "upstreamSha256": "a6716487fea6b6ae06e7c5439a84e0ba4194185859d2740d68e18207980041cb"
+    },
+    {
+      "path": "dist-server/server/modules/websocket/services/chat-session-writer.service.js",
+      "sha256": "6b160fdd53406a834581f07c21f4d8e741ca435cb688f6f13339140666d9b21a",
+      "upstreamSha256": "2a93df88c1443a454c0a7b41344373fa42d247a231048510f98f2be36c4f900c"
+    },
+    {
+      "path": "dist-server/server/modules/websocket/services/chat-websocket.service.js",
+      "sha256": "a11bfda2aefc58e38cc9e62d1fa97d5194dc2316a355533a80142b0820150d64",
+      "upstreamSha256": "58ec3d159405399fedca9f450f81e64818bfba1e89e78b7c6bf73e28ec02fb11"
+    },
+    {
+      "path": "dist-server/server/modules/websocket/tests/chat-background-subscribe.test.js",
+      "sha256": "df5ec4eb46b3998fbbaf8b24298bed3c6edc68c1fb6c15e1a44dbd5cd5df57a2",
+      "upstreamSha256": "d6b375988e0e4b8af9534af2f69603a3bf92c224ffd67b1f434f14fa8e2e4a2a"
+    },
+    {
+      "path": "dist-server/server/modules/providers/provider.routes.js",
+      "sha256": "f7c4650f5c26a3798fd1a3f99b9edd98b16e08230edea3213351d93cd355aa05",
+      "upstreamSha256": "6b0c65ed1fc14572ef4e0e442009326270ed1ee2c61e9ba2bc29a1016e8c9c09"
+    },
+    {
+      "path": "dist-server/server/modules/providers/conversation-navigation.routes.js",
+      "sha256": "86e6ad1289a6c37711494289cc1e0e3d1f98d21265940cd9fa19ae68992565b5",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/sessions-watcher.service.js",
+      "sha256": "89a8d83c1d6b5edf5b1dedbf966e50783c8e59c14dc2c0a262a92851f788aa9d",
+      "upstreamSha256": "2e4448d2522f56cbe409cffe770ac183baff7660c9a279e0d187c0a204ced328"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/conversation-navigation.js",
+      "sha256": "18f22cb6480022c16c80cb6f288eccb54af6287c1f4574f9ef25f543843cb51b",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/provider-capabilities.service.js",
+      "sha256": "cd7ecd8f8f83dbfbad4ca1aff946f69480c69272c9f98fdcc4524bd5b72b51f3",
+      "upstreamSha256": "b9c2048d308e2fa6cb2ce20b8f672378b33cc8bb399680136088944d4c529ecd"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/provider-token-usage.service.js",
+      "sha256": "0e05c7a03e0e78ecaaf95d76f102ed0859f7b8ba3b76a1bbc1e72325e9ce191c",
+      "upstreamSha256": "fc4a2adca08cf952c6a4c0872c0f58f79b18a70a01c3bda96fc0e94c9d54d8ed"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/session-conversations-search.service.js",
+      "sha256": "fa5846c83d2c41621b35fb6b3a526ccaf04c6823573a283c318b28426718b841",
+      "upstreamSha256": "f74be43f4fe943f02022c232398436b912e2eb9be57b72602ab3271f163c5b1c"
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/codex-runtime.test.js",
+      "sha256": "41f841bb0f63da6537a254916965e23a17d29f91162fe2b3356b7cffe7c6e3d2",
+      "upstreamSha256": "e29d6a4ce112bca780cc38e94bab52948f28da6661fc1f95ab7681920f984128"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-auth.provider.js",
+      "sha256": "614ed215fc7c7b88ae3967a0d685d3fedd97af993ef8b1da100c7f1fc2e5f8dc",
+      "upstreamSha256": "f87ae5e6b491d31a3913e57aa5e95460376d74b8367585d6dac21b2130c57419"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-models.provider.js",
+      "sha256": "e50c8ef228773174db36569715a1ae4474a236bb8a4ab205ecc2c402f57ba374",
+      "upstreamSha256": "48f2bd0ae244224b6f2b019ef4f809978c6712c8a2493d896306d0ced4462438"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-sessions.provider.js",
+      "sha256": "d77b51aa35855fab272c6c71f79bf1bbbdc78ef8ac0a13b06ea180be36f2aa4f",
+      "upstreamSha256": "a285b79a037d9235aa2d9639d35e2d4aab0d2841eea957f699f72a004dd29abd"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-rollout-files.js",
+      "sha256": "97cab45d34c68d254b553627530410a37c22f07c7c67667fb18ea45e228c3a13",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-session-synchronizer.provider.js",
+      "sha256": "f7aa9ec8c81d84af8993697f8861bd8ea81244563fadd830515033414d5bb4d7",
+      "upstreamSha256": "fea6790923222678b0ebd4364e107eff66a38cd6368b1608cad75ba2997ec73f"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-history-synchronizer.js",
+      "sha256": "d52bf7bfbaf160304b5d396281390fa2df1bc212743f1f54330752e9d66cba11",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-interactive-runtime.js",
+      "sha256": "48c1d2324f83a8ffa9288e4a013f1816b088eb0f9501afc4af12aba8c9fd1019",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-rpc.js",
+      "sha256": "d2da045a75131e37da7428ddb7c917c69b25dfaecd9ac40facdcc7553c284a76",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-runtime.provider.js",
+      "sha256": "fc87aff3fd7f939ebe833df089069f6db1c92ed513e03f511b995b4852ff7a87",
+      "upstreamSha256": "25f3b640cdec28326cb416f1d464e503056a160126476a9c1def5604ae252fba"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-app-server.client.js",
+      "sha256": "2910ba27176018d4e31c28b7b38a4ac30620c5c2c3000fb14597424df2888e6d",
+      "upstreamSha256": "ad7a5d203f39fc825cf0a77ae87fa042119c7c6b9302ea7c66b02d7161aa42b3"
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-context-usage.js",
+      "sha256": "8fad3531708dca071813c611f2e017f1be388d228ffa13b0beb7e4a9a1c677a9",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-async-questions.js",
+      "sha256": "571d236ec57ddefb4b2fc9cb6f0bc4453a1b383d3ea4e25c2fde8e851c6b110e",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-question.routes.js",
+      "sha256": "2b71ecebd5a3c645a09e93f0f1e4260f05abb1b7bc8956d7024b11b1afa49fb3",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/database/connection.js",
+      "sha256": "7ef767e81188613205eef5ee5ecc40d91006103c110398765b04debfaa6ad18c",
+      "upstreamSha256": "716877b5aa8da92f38efc568dd09f39b859f0a60d15267ace1976e89df8ca791"
+    },
+    {
+      "path": "dist-server/server/modules/database/repositories/app-config.js",
+      "sha256": "365d47c3c5a7bd8044dfe1ac38a76e85855db0067333c0f683fe7dbb28e19cb6",
+      "upstreamSha256": "04a9603c75141637ef42d237825e7fd82f0e928256c836177b2ebcb37185215d"
+    },
+    {
+      "path": "public/styles/cloudcli-modern.css",
+      "sha256": "13ff2c6ace6162e4db16d53920562fef2787a194985dd61268a914872c4e5a2b",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "5db978e71bc76f2004d3c8829ad7bc1295b27b75f30cdb1d46b42293f2465405",
+      "upstreamSha256": "131ac7a339c52716b55133ef87555e348c1caf31943240d68b201ff8e3fc8946"
+    }
+  ]
+}

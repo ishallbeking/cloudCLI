@@ -1,0 +1,138 @@
+{
+  "name": "@cloudcli-ai/cloudcli",
+  "version": "1.37.7",
+  "productName": "CloudCLI",
+  "description": "A web-based UI for Claude Code CLI",
+  "type": "module",
+  "main": "dist-server/server/index.js",
+  "bin": {
+    "cloudcli": "dist-server/server/modules/cli/cli.js"
+  },
+  "files": [
+    "electron/",
+    "server/",
+    "shared/",
+    "public/api-docs.html",
+    "dist/",
+    "dist-server/",
+    "scripts/",
+    "README.md"
+  ],
+  "homepage": "https://cloudcli.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siteboon/claudecodeui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/siteboon/claudecodeui/issues"
+  },
+  "scripts": {
+    "server": "node dist-server/server/index.js"
+  },
+  "build": {
+    "appId": "ai.cloudcli.desktop",
+    "productName": "CloudCLI",
+    "asar": false,
+    "artifactName": "cloudcli-desktop-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "release/desktop"
+    },
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "files": [
+      "electron/",
+      "public/",
+      "dist/",
+      "dist-server/",
+      "shared/",
+      "server/",
+      "package.json",
+      "!**/node_modules/@anthropic-ai/claude-agent-sdk-{darwin,linux,win32}-*/**"
+    ],
+    "protocols": [
+      {
+        "name": "CloudCLI",
+        "schemes": [
+          "cloudcli"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "electron/assets/logo-macos.icns",
+      "notarize": true,
+      "target": [
+        "dmg"
+      ],
+      "extendInfo": {
+        "CFBundleName": "CloudCLI",
+        "CFBundleDisplayName": "CloudCLI",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLName": "CloudCLI",
+            "CFBundleURLSchemes": [
+              "cloudcli"
+            ]
+          }
+        ]
+      }
+    },
+    "win": {
+      "icon": "electron/assets/logo-windows.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "installerIcon": "electron/assets/logo-windows.ico",
+      "uninstallerIcon": "electron/assets/logo-windows.ico"
+    }
+  },
+  "keywords": [
+    "claude code",
+    "claude-code",
+    "claude-code-ui",
+    "cloudcli",
+    "codex",
+    "cursor",
+    "cursor-cli",
+    "anthropic",
+    "openai",
+    "google",
+    "coding-agent",
+    "web-ui",
+    "ui",
+    "mobile IDE"
+  ],
+  "author": "CloudCLI UI Contributors",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.165",
+    "@iarna/toml": "^2.2.5",
+    "@octokit/rest": "^22.0.0",
+    "@openai/codex": "0.156.1",
+    "@openai/codex-sdk": "^0.156.0",
+    "@opencode-ai/sdk": "^1.19.5",
+    "@vscode/ripgrep": "^1.17.1",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.6.2",
+    "chokidar": "^4.0.3",
+    "cors": "^2.8.5",
+    "cross-spawn": "^7.0.3",
+    "express": "^4.18.2",
+    "gray-matter": "^4.0.3",
+    "ignore": "^7.0.6",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^3.0.1",
+    "multer": "^2.0.1",
+    "node-fetch": "^2.7.0",
+    "node-pty": "^1.2.0-beta.12",
+    "web-push": "^3.6.7",
+    "ws": "^8.14.2"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": "oxlint",
+    "server/**/*.{js,ts}": "oxlint"
+  }
+}

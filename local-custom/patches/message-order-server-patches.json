@@ -1,0 +1,98 @@
+[
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "chunks": [
+      {
+        "before": "import fsSync from 'node:fs';\nimport fsp from 'node:fs/promises';\nimport path from 'node:path';\n",
+        "after": "import { createHash } from 'node:crypto';\nimport fsSync from 'node:fs';\nimport fsp from 'node:fs/promises';\nimport path from 'node:path';\n"
+      },
+      {
+        "before": "    const turns = createCodexTurnTracker();\n    /** Turns whose prompt already carries the anchor, so only the first does. */\n    const anchoredTurnIds = new Set();\n    /** Emits a tool_result row unless the call already produced one. */\n    const pushToolResult = (callId, timestamp, output, isError) => {\n        if (completedExecCalls.has(callId)) {\n",
+        "after": "    const turns = createCodexTurnTracker();\n    /** Turns whose prompt already carries the anchor, so only the first does. */\n    const anchoredTurnIds = new Set();\n    const userByTurn = new Map();\n    /** Emits a tool_result row unless the call already produced one. */\n    const pushToolResult = (callId, timestamp, output, isError) => {\n        if (completedExecCalls.has(callId)) {\n"
+      },
+      {
+        "before": "                }\n                continue;\n            }\n            if (payload.type === 'turn_aborted') {\n                messages.push({\n                    type: 'status_note',\n                    timestamp,\n                    content: payload.reason === 'interrupted' ? 'Turn interrupted' : `Turn aborted (${String(payload.reason ?? 'unknown')})`,\n                });\n                continue;\n",
+        "after": "                }\n                continue;\n            }\n            if (payload.type === 'task_complete' && payload.error) {\n                messages.push({type: 'error', timestamp, itemId: `codex-turn:${payload.turn_id || turns.getCurrentTurnId()}:error`,\n                    codexTurnId: payload.turn_id || turns.getCurrentTurnId(), content: payload.error.message || 'Codex turn failed'});\n                continue;\n            }\n            if (payload.type === 'turn_aborted') {\n                messages.push({\n                    type: 'status_note',\n                    itemId: `codex-turn:${payload.turn_id || turns.getCurrentTurnId()}:interrupted`,\n                    codexTurnId: payload.turn_id || turns.getCurrentTurnId(), timestamp,\n                    content: payload.reason === 'interrupted' ? 'Turn interrupted' : `Turn aborted (${String(payload.reason ?? 'unknown')})`,\n                });\n                continue;\n"
+      },
+      {
+        "before": "                        }\n                        const row = {\n                            type: 'user',\n                            timestamp,\n                            message: { role: 'user', content },\n                            ...(images ? { images } : {}),\n                            ...(isFirstPromptOfTurn ? { turnId } : {}),\n                        };\n                        messages.push(row);\n                    }\n                }\n",
+        "after": "                        }\n                        const row = {\n                            type: 'user',\n                            itemId: item.id, clientMessageId: item.client_id, codexTurnId: turnId,\n                            timestamp,\n                            message: { role: 'user', content },\n                            ...(images ? { images } : {}),\n                            ...(isFirstPromptOfTurn ? { turnId } : {}),\n                        };\n                        if (turnId) userByTurn.set(turnId, item.id);\n                        messages.push(row);\n                    }\n                }\n"
+      },
+      {
+        "before": "            }\n            messages.push({\n                type: 'assistant',\n                timestamp,\n                message: { role: 'assistant', content: textContent },\n                memoryCitations: cited.memoryCitations,\n",
+        "after": "            }\n            messages.push({\n                type: 'assistant',\n                itemId: payload.id, codexTurnId: turns.getCurrentTurnId(),\n                parentUserMessageId: userByTurn.get(turns.getCurrentTurnId()),\n                timestamp,\n                message: { role: 'assistant', content: textContent },\n                memoryCitations: cited.memoryCitations,\n"
+      },
+      {
+        "before": "            if (summaryText.trim()) {\n                messages.push({\n                    type: 'thinking',\n                    timestamp,\n                    message: { role: 'assistant', content: summaryText },\n                });\n            }\n",
+        "after": "            if (summaryText.trim()) {\n                messages.push({\n                    type: 'thinking',\n                    itemId: payload.id, codexTurnId: turns.getCurrentTurnId(), timestamp,\n                    message: { role: 'assistant', content: summaryText },\n                });\n            }\n"
+      },
+      {
+        "before": "     */\n    normalizeHistoryEntry(raw, sessionId) {\n        const ts = raw.timestamp || new Date().toISOString();\n        const baseId = raw.itemId || raw.uuid || generateMessageId('codex');\n        if (raw.type === 'status_note' && typeof raw.content === 'string') {\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "     */\n    normalizeHistoryEntry(raw, sessionId) {\n        const ts = raw.timestamp || new Date().toISOString();\n        const baseId = raw.itemId || raw.uuid || (raw.toolCallId ? `${raw.toolCallId}${raw.type === 'tool_result' ? '_result' : ''}`\n            : `codex-${createHash('sha256').update(JSON.stringify([sessionId, raw.timestamp, raw.type, raw.message, raw.content])).digest('hex').slice(0, 24)}`);\n        const normalize = fields => createNormalizedMessage({ ...fields,\n          turnId: raw.codexTurnId || raw.turnId, clientMessageId: raw.clientMessageId, parentUserMessageId: raw.parentUserMessageId,\n        });\n        if (raw.type === 'error') return [normalize({id: baseId, sessionId, timestamp: ts, provider: PROVIDER, kind: 'error', content: raw.content})];\n        if (raw.type === 'status_note' && typeof raw.content === 'string') {\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      },
+      {
+        "before": "            if (!thinkingContent.trim()) {\n                return [];\n            }\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "            if (!thinkingContent.trim()) {\n                return [];\n            }\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      },
+      {
+        "before": "            if (!parsedFiles.text.trim() && !rawImages && !files) {\n                return [];\n            }\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "            if (!parsedFiles.text.trim() && !rawImages && !files) {\n                return [];\n            }\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      },
+      {
+        "before": "            if (!content.trim()) {\n                return [];\n            }\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "            if (!content.trim()) {\n                return [];\n            }\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      },
+      {
+        "before": "                })];\n        }\n        if (raw.type === 'tool_use' || raw.toolName) {\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "                })];\n        }\n        if (raw.type === 'tool_use' || raw.toolName) {\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      },
+      {
+        "before": "                })];\n        }\n        if (raw.type === 'tool_result') {\n            return [createNormalizedMessage({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n",
+        "after": "                })];\n        }\n        if (raw.type === 'tool_result') {\n            return [normalize({\n                    id: baseId,\n                    sessionId,\n                    timestamp: ts,\n"
+      }
+    ]
+  },
+  {
+    "path": "modules/websocket/services/chat-run-registry.service.js",
+    "chunks": [
+      {
+        "before": "import { sessionsDb } from '../../../modules/database/index.js';\nimport { ChatSessionWriter } from '../../../modules/websocket/services/chat-session-writer.service.js';\nimport { broadcastSessionUpserted } from '../../../modules/websocket/services/session-upsert-broadcast.service.js';\n",
+        "after": "import { randomUUID } from 'node:crypto';\nimport { sessionsDb } from '../../../modules/database/index.js';\nimport { ChatSessionWriter } from '../../../modules/websocket/services/chat-session-writer.service.js';\nimport { broadcastSessionUpserted } from '../../../modules/websocket/services/session-upsert-broadcast.service.js';\n"
+      },
+      {
+        "before": "        ...message,\n        sessionId: run.appSessionId,\n        seq: run.lastSeq,\n    };\n    if (message.kind === 'complete') {\n        // The provider may report its own id here; the frontend only ever knows\n",
+        "after": "        ...message,\n        sessionId: run.appSessionId,\n        seq: run.lastSeq,\n        runId: run.runId, runStartedAt: run.startedAt,\n    };\n    if (message.kind === 'complete') {\n        // The provider may report its own id here; the frontend only ever knows\n"
+      },
+      {
+        "before": "        }\n        const run = {\n            appSessionId: input.appSessionId,\n            provider: input.provider,\n            providerSessionId: input.providerSessionId,\n            status: 'running',\n",
+        "after": "        }\n        const run = {\n            appSessionId: input.appSessionId,\n            runId: randomUUID(),\n            provider: input.provider,\n            providerSessionId: input.providerSessionId,\n            status: 'running',\n"
+      },
+      {
+        "before": "            },\n            decorateOutboundEvent: (message) => decorateAndRecordEvent(run, message),\n        });\n        runs.set(input.appSessionId, run);\n        return run;\n    },\n",
+        "after": "            },\n            decorateOutboundEvent: (message) => decorateAndRecordEvent(run, message),\n        });\n        existing?.writer.copyConnectionsTo(run.writer);\n        runs.set(input.appSessionId, run);\n        return run;\n    },\n"
+      }
+    ]
+  },
+  {
+    "path": "modules/websocket/services/chat-session-writer.service.js",
+    "chunks": [
+      {
+        "before": "    updateWebSocket(newConnection) {\n        this.connections.add(newConnection);\n    }\n    setSessionId(sessionId) {\n        this.captureProviderSessionId(sessionId);\n    }\n",
+        "after": "    updateWebSocket(newConnection) {\n        this.connections.add(newConnection);\n    }\n    copyConnectionsTo(writer) {\n        for (const connection of this.connections) {\n            if (connection.readyState === WS_OPEN_STATE) writer.updateWebSocket(connection);\n        }\n    }\n    setSessionId(sessionId) {\n        this.captureProviderSessionId(sessionId);\n    }\n"
+      }
+    ]
+  },
+  {
+    "path": "modules/websocket/services/chat-websocket.service.js",
+    "chunks": [
+      {
+        "before": "            sessionId,\n            isProcessing,\n            lastSeq: run?.lastSeq ?? 0,\n            pendingPermissions,\n            timestamp: new Date().toISOString(),\n        });\n",
+        "after": "            sessionId,\n            isProcessing,\n            lastSeq: run?.lastSeq ?? 0,\n            runId: run?.runId, runStartedAt: run?.startedAt,\n            pendingPermissions,\n            timestamp: new Date().toISOString(),\n        });\n"
+      },
+      {
+        "before": "        // replaying them (e.g. after a page reload where the client's lastSeq is\n        // 0) would duplicate messages the history fetch already returned.\n        if (isProcessing) {\n            for (const event of chatRunRegistry.replayEvents(sessionId, lastSeq)) {\n                sendJson(ws, event);\n            }\n        }\n",
+        "after": "        // replaying them (e.g. after a page reload where the client's lastSeq is\n        // 0) would duplicate messages the history fetch already returned.\n        if (isProcessing) {\n            for (const event of chatRunRegistry.replayEvents(sessionId, target.runId && target.runId !== run?.runId ? 0 : lastSeq)) {\n                sendJson(ws, event);\n            }\n        }\n"
+      }
+    ]
+  }
+]

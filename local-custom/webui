@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+task_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$task_root/env.local" ]]; then
+  set -a
+  source "$task_root/env.local"
+  set +a
+fi
+export CLOUDCLI_CUSTOM_ROOT="$task_root"
+exec "${CLOUDCLI_NODE_BIN:-node}" "$task_root/scripts/manage.mjs" "${@:-status}"

@@ -1,0 +1,97 @@
+[
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "import readline from 'node:readline';",
+    "after": "import readline from 'node:readline';\nimport {createCodexArtifactStream, resolveCodexRolloutPath} from './codex-rollout-files.js';"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "const canonicalPath = await fsp.realpath(filePath);",
+    "after": "const canonicalPath = await resolveCodexRolloutPath(filePath);"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "if ((await fsp.stat(canonicalPath)).size < endByteOffset)",
+    "after": "if (!canonicalPath.endsWith('.zst') && (await fsp.stat(canonicalPath)).size < endByteOffset)"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "    const stream = fsSync.createReadStream(canonicalPath, {\n        ...(endByteOffset !== undefined ? { end: endByteOffset - 1 } : {}),\n    });",
+    "after": "  const stream = createCodexArtifactStream(canonicalPath, {endByteOffset});"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "if (entry.name.endsWith(suffix))",
+    "after": "if ((entry.name.endsWith(suffix) || entry.name.endsWith(suffix + '.zst') || entry.name.endsWith('_' + suffix.slice(1)) || entry.name.endsWith('_' + suffix.slice(1) + '.zst')) && path.join(directory, entry.name) !== excludedPath)"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "fileStream = fsSync.createReadStream(filePath);",
+    "after": "fileStream = createCodexArtifactStream(filePath);"
+  },
+  {
+    "path": "modules/providers/services/sessions-watcher.service.js",
+    "before": "return filePath.endsWith('.jsonl');",
+    "after": "return filePath.endsWith('.jsonl') || (provider === 'codex' && filePath.endsWith('.jsonl.zst'));"
+  },
+  {
+    "path": "modules/providers/services/session-conversations-search.service.js",
+    "before": "import readline from 'node:readline';",
+    "after": "import readline from 'node:readline';\nimport {readCodexArtifactLines} from '../list/codex/codex-rollout-files.js';"
+  },
+  {
+    "path": "modules/providers/services/session-conversations-search.service.js",
+    "before": "\n        const fileStream = fsSync.createReadStream(session.jsonl_path);\n        const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });\n        for await (const line of rl) {",
+    "after": "\n        for await (const line of readCodexArtifactLines(session.jsonl_path)) {"
+  },
+  {
+    "path": "modules/providers/services/session-conversations-search.service.js",
+    "before": "\n            const fileStream = fsSync.createReadStream(session.jsonl_path);\n            const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });\n            for await (const line of rl) {",
+    "after": "\n            for await (const line of readCodexArtifactLines(session.jsonl_path)) {"
+  },
+  {
+    "path": "modules/providers/services/session-conversations-search.service.js",
+    "before": "const matchedFileKeys = await findMatchedFileKeys(searchablePathEntries, safeQuery, words, signal ?? undefined);",
+    "after": "const matchedFileKeys = await findMatchedFileKeys(searchablePathEntries.filter(entry => !entry.absolutePath.endsWith('.zst')), safeQuery, words, signal ?? undefined);"
+  },
+  {
+    "path": "modules/providers/services/session-conversations-search.service.js",
+    "before": "    if (isAborted() || matchedFileKeys.size === 0) {",
+    "after": "  // ripgrep reads raw bytes; compressed candidates require the decoded parser.\n  for (const entry of searchablePathEntries) if (entry.absolutePath.endsWith('.zst')) matchedFileKeys.add(entry.normalizedPath);\n    if (isAborted() || matchedFileKeys.size === 0) {"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "if ((await fsp.stat(indexed.jsonl_path)).isFile())",
+    "after": "if ((await fsp.stat(indexed.jsonl_path)).isFile() && await fsp.realpath(indexed.jsonl_path) !== filePath)"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "findFileWithSuffix(path.join(home, storage), `-${threadId}.jsonl`, 3)",
+    "after": "findFileWithSuffix(path.join(home, storage), `-${threadId}.jsonl`, 3, filePath)"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "async function findFileWithSuffix(directory, suffix, depth) {",
+    "after": "async function findFileWithSuffix(directory, suffix, depth, excludedPath) {"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "findFileWithSuffix(subdirectory, suffix, depth - 1)",
+    "after": "findFileWithSuffix(subdirectory, suffix, depth - 1, excludedPath)"
+  },
+  {
+    "path": "modules/providers/list/codex/codex-sessions.provider.js",
+    "before": "code: 'CODEX_HISTORY_SOURCE_UNAVAILABLE', statusCode: 502,",
+    "after": "code: threadId === readNonEmptyString(payload?.id) ? 'CODEX_HISTORY_SOURCE_INVALID' : 'CODEX_HISTORY_SOURCE_UNAVAILABLE', statusCode: 502,"
+  },
+  {
+    "path": "modules/database/connection.js",
+    "before": "  instance = new Database(dbPath);",
+    "after": "  instance = new Database(dbPath);\n  instance.pragma('busy_timeout = 10000');"
+  },
+  {
+    "path": "modules/database/repositories/app-config.js",
+    "before": "        catch {\n            // Swallow errors so early-startup reads (e.g. JWT secret) do not crash.\n            return null;\n        }",
+    "after": "    catch (error) {\n      // A locked database is not a missing key: never rotate the JWT secret\n      // merely because another process is scanning historical sessions.\n      if (error?.code === 'SQLITE_BUSY' || error?.code === 'SQLITE_LOCKED') throw error;\n      return null;\n    }"
+  }
+]
