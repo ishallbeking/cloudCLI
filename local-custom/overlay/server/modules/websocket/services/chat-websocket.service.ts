@@ -500,11 +500,11 @@ async function handleChatStopTask(
  * This single message replaces the old `check-session-status`,
  * `get-pending-permissions`, and Claude-only writer reconnect flows.
  */
-function handleChatSubscribe(
+async function handleChatSubscribe(
   ws: WebSocket,
   data: AnyRecord,
   dependencies: ChatWebSocketDependencies
-): void {
+): Promise<void> {
   const targets = Array.isArray(data.sessions) ? data.sessions : [];
 
   for (const target of targets) {
@@ -524,6 +524,12 @@ function handleChatSubscribe(
       ? Math.max(0, Math.floor(lastSeqRaw))
       : 0;
 
+    // The native Codex daemon outlives this WebUI process and also serves the CLI.
+    const session = sessionsDb.getSessionById(sessionId);
+    const external = !chatRunRegistry.isProcessing(sessionId) && session?.provider === 'codex'
+      ? (await sessionsService.listRunningSessions()).find(entry => entry.sessionId === sessionId)
+      : undefined;
+    // Re-read after awaiting: a new local send may have started in the meantime.
     const run = chatRunRegistry.getRun(sessionId);
     const isProcessing = chatRunRegistry.isProcessing(sessionId);
 
@@ -544,7 +550,8 @@ function handleChatSubscribe(
     sendJson(ws, {
       kind: 'chat_subscribed',
       sessionId,
-      isProcessing,
+      isProcessing: isProcessing || Boolean(external),
+      ...(external && !isProcessing ? {canInterrupt: false, statusText: external.statusText} : {}),
       lastSeq: run?.lastSeq ?? 0,
       runId: run?.runId, runStartedAt: run?.startedAt,
       pendingPermissions,
@@ -695,7 +702,7 @@ export function handleChatConnection(
           await handleChatStopTask(ws, data, dependencies);
           return;
         case 'chat.subscribe':
-          handleChatSubscribe(ws, data, dependencies);
+          await handleChatSubscribe(ws, data, dependencies);
           return;
         case 'chat.permission-response':
           handlePermissionResponse(data, dependencies);

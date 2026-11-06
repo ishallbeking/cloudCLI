@@ -42,12 +42,12 @@
     },
     {
       "path": "server/modules/websocket/services/chat-websocket.service.ts",
-      "sha256": "55fa9618c45d5fa8b8e55e2e71dbe08021ce3f866ae3af804519ca41b3bc3d70",
+      "sha256": "7952b34b3a643be38391aa5a761fb3bff6b372826a39470125380fc08f16d532",
       "upstreamSha256": "37c2eaaaa7fed5a349fb067fde856a324fe7534d4e402866c8213766b5faf525"
     },
     {
       "path": "server/modules/websocket/tests/chat-background-subscribe.test.ts",
-      "sha256": "f51fbbd2b150adf40fb6e095108d4eb5c034fbc9808d0b22a21402d45e62b57a",
+      "sha256": "31712087bb43ca7ae0802b4c71e64745f0719d79643ede7e6e5861ff0bdd1c27",
       "upstreamSha256": "e2bcee673467ef9962d858e7a4d88d5897bc7a41f2084cc1c070d5cfac9fad67"
     },
     {
@@ -212,12 +212,12 @@
     },
     {
       "path": "dist-server/server/modules/websocket/services/chat-websocket.service.js",
-      "sha256": "a11bfda2aefc58e38cc9e62d1fa97d5194dc2316a355533a80142b0820150d64",
+      "sha256": "8a5e02fbb7c0fcb3727d26c9438e8ae658d7185235a2eca213024b92f7418204",
       "upstreamSha256": "58ec3d159405399fedca9f450f81e64818bfba1e89e78b7c6bf73e28ec02fb11"
     },
     {
       "path": "dist-server/server/modules/websocket/tests/chat-background-subscribe.test.js",
-      "sha256": "df5ec4eb46b3998fbbaf8b24298bed3c6edc68c1fb6c15e1a44dbd5cd5df57a2",
+      "sha256": "e62558e50a56d3e8340029d7f653337a917f3b55f5176368415942f7614b62a6",
       "upstreamSha256": "d6b375988e0e4b8af9534af2f69603a3bf92c224ffd67b1f434f14fa8e2e4a2a"
     },
     {
@@ -344,6 +344,36 @@
       "path": "dist/index.html",
       "sha256": "5db978e71bc76f2004d3c8829ad7bc1295b27b75f30cdb1d46b42293f2465405",
       "upstreamSha256": "131ac7a339c52716b55133ef87555e348c1caf31943240d68b201ff8e3fc8946"
+    },
+    {
+      "path": "server/modules/providers/services/codex-liveness.service.ts",
+      "sha256": "1bee2468b876b156b16c2ce5547b80356880c7d0a93c4f55b92cea3e92725a8a",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/codex-liveness.service.js",
+      "sha256": "f4147fb1efa31a402dc5f47293df26abf6ba2038c6cf52a5fe4b60ac834ba95e",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/services/sessions.service.ts",
+      "sha256": "79707ce02c6b136025977cc32fd78c31d64045b36c36e17122514e75c107ce59",
+      "upstreamSha256": "4e01ab6c165dbdc3c6d2af8d5d1160c1c675ff82af7269333a6b6944c99b664b"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/sessions.service.js",
+      "sha256": "ab9cfee98a23819fd3686944c58a06de25541e63d7d810e94ec0fd177aa24d47",
+      "upstreamSha256": "6d2c58472f4bfc590fb23d5493c7c15b6f7c0c0c8c55922539be3f17c4976b1c"
+    },
+    {
+      "path": "server/modules/providers/tests/codex-liveness.test.ts",
+      "sha256": "2114f65b414e864f10625bbeff49f735160df13d3943ea156b8c3a796ee39488",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/codex-liveness.test.js",
+      "sha256": "f3843b93412d2260ccfdd162c4c846e6836a823b933f18e977cc7d53d939c8be",
+      "upstreamSha256": null
     }
   ]
 }

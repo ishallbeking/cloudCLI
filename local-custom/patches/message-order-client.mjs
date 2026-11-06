@@ -30,5 +30,7 @@ export async function patchMessageOrder(client) {
     'sessionId:n.id,...cloudcliRunCursor(n.id,p.current.get(n.id)??0)');
   replace('sessionId:n.id,lastSeq:P.current.get(n.id)??0',
     'sessionId:n.id,...cloudcliRunCursor(n.id,P.current.get(n.id)??0)');
+  replace('E.isProcessing?m?.(T):h?.(T,{ifStartedBefore:p.current.get(T)})',
+    'E.isProcessing?m?.(T,{statusText:E.statusText,canInterrupt:E.canInterrupt!==false}):h?.(T,{ifStartedBefore:p.current.get(T)})');
   return client;
 }

@@ -339,7 +339,7 @@ async function handleChatStopTask(ws, data, dependencies) {
  * This single message replaces the old `check-session-status`,
  * `get-pending-permissions`, and Claude-only writer reconnect flows.
  */
-function handleChatSubscribe(ws, data, dependencies) {
+async function handleChatSubscribe(ws, data, dependencies) {
     const targets = Array.isArray(data.sessions) ? data.sessions : [];
     for (const target of targets) {
         if (!target || typeof target !== 'object') {
@@ -355,6 +355,12 @@ function handleChatSubscribe(ws, data, dependencies) {
         const lastSeq = typeof lastSeqRaw === 'number' && Number.isFinite(lastSeqRaw)
             ? Math.max(0, Math.floor(lastSeqRaw))
             : 0;
+        // The native Codex daemon outlives this WebUI process and also serves the CLI.
+        const session = sessionsDb.getSessionById(sessionId);
+        const external = !chatRunRegistry.isProcessing(sessionId) && session?.provider === 'codex'
+            ? (await sessionsService.listRunningSessions()).find(entry => entry.sessionId === sessionId)
+            : undefined;
+        // Re-read after awaiting: a new local send may have started in the meantime.
         const run = chatRunRegistry.getRun(sessionId);
         const isProcessing = chatRunRegistry.isProcessing(sessionId);
         // Future live events for this run should land on the socket that asked —
@@ -372,7 +378,8 @@ function handleChatSubscribe(ws, data, dependencies) {
         sendJson(ws, {
             kind: 'chat_subscribed',
             sessionId,
-            isProcessing,
+            isProcessing: isProcessing || Boolean(external),
+            ...(external && !isProcessing ? {canInterrupt: false, statusText: external.statusText} : {}),
             lastSeq: run?.lastSeq ?? 0,
             runId: run?.runId, runStartedAt: run?.startedAt,
             pendingPermissions,
@@ -486,7 +493,7 @@ export function handleChatConnection(ws, request, dependencies) {
                     await handleChatStopTask(ws, data, dependencies);
                     return;
                 case 'chat.subscribe':
-                    handleChatSubscribe(ws, data, dependencies);
+                    await handleChatSubscribe(ws, data, dependencies);
                     return;
                 case 'chat.permission-response':
                     handlePermissionResponse(data, dependencies);
