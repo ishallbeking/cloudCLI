@@ -546,10 +546,13 @@ async function handleChatSubscribe(
 
     // Pending approvals are tracked under the app session id inside the
     // Claude runtime, so they can be looked up directly.
+    const replayAfterSeq = target.runId && target.runId !== run?.runId ? 0 : lastSeq;
+    const replayTruncated = Boolean(run && replayAfterSeq < run.replayDroppedThroughSeq);
     const pendingPermissions = [...dependencies.runtime.getPendingApprovalsForSession(sessionId), ...codexApprovalService.listPending(sessionId)];
 
     sendJson(ws, {
       kind: 'chat_subscribed',
+      replayTruncated,
       sessionId,
       isProcessing: isProcessing || Boolean(external),
       ...(external && !isProcessing ? {canInterrupt: false, statusText: external.statusText} : {}),
@@ -723,6 +726,7 @@ export function handleChatConnection(
   ws.on('close', () => {
     console.log('[INFO] Chat client disconnected');
     codexApprovalService.unwatchConnection(ws);
+    chatRunRegistry.detachConnection(ws);
     connectedClients.delete(ws);
   });
 }

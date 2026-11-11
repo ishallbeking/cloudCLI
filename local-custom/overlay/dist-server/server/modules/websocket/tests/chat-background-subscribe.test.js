@@ -1,14 +1,14 @@
-import { sessionsService } from '../../../modules/providers/index.js';
+import { sessionsService } from './../../providers/index.js';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test, { mock } from 'node:test';
-import { closeConnection, initializeDatabase, sessionsDb } from '../../../modules/database/index.js';
-import { handleChatConnection } from '../../../modules/websocket/services/chat-websocket.service.js';
-import { chatRunRegistry } from '../../../modules/websocket/services/chat-run-registry.service.js';
-import { connectedClients } from '../../../modules/websocket/services/websocket-state.service.js';
+import { closeConnection, initializeDatabase, sessionsDb } from './../../database/index.js';
+import { handleChatConnection } from './../services/chat-websocket.service.js';
+import { chatRunRegistry } from './../services/chat-run-registry.service.js';
+import { connectedClients } from './../services/websocket-state.service.js';
 /**
  * A session's turn ends while its agents, workflow or backgrounded command are
  * still going. The run registry marks the run completed at the turn's
@@ -135,63 +135,85 @@ test('a retained run\'s eviction timer cannot evict the session\'s next run earl
         mock.timers.reset();
     }
 });
-//# sourceMappingURL=chat-background-subscribe.test.js.map
-test('a queued detached run inherits the preceding run audience and replay resets across run ids',async()=>{
- await withIsolatedDatabase(async()=>{
-  const oldTab=createFakeSocket(),previous=startAndCompleteRun(oldTab);
-  const next=chatRunRegistry.startRun({appSessionId:SESSION_ID,provider:'claude',providerSessionId:'native-1',connection:null,userId:1});
-  next.writer.send({id:'queued-message',kind:'text',provider:'claude',sessionId:'native-1',role:'assistant',content:'queued reply'});
-  assert.ok(oldTab.frames.some(f=>f.id==='queued-message'),'Queued turn must stream to existing browser');
-  assert.notEqual(next.runId,previous.runId);
-  const reconnect=createFakeSocket();
-  handleChatConnection(reconnect,{user:{id:1}},{runtime:{hasBackgroundWork:()=>false,getPendingApprovalsForSession:()=>[]}});
-  reconnect.emit('message',JSON.stringify({type:'chat.subscribe',sessions:[{sessionId:SESSION_ID,runId:previous.runId,lastSeq:1000}]}));
-  await settle();
-  assert.equal(reconnect.frames[0].runId,next.runId);
-  assert.ok(reconnect.frames.some(f=>f.id==='queued-message'),'Previous run cursor cannot suppress the new run replay');
- });
-});
-
-test('native Codex work is restored in subscribe ack without a local run or abort capability', async () => {
-  await withIsolatedDatabase(async () => {
-    sessionsDb.createAppSession('external-codex', 'codex', '/tmp/codex-liveness-subscribe');
-    const observer = mock.method(sessionsService, 'listRunningSessions', async () => [{
-      sessionId: 'external-codex', provider: 'codex', startedAt: 100, lastSeq: 0,
-      canInterrupt: false, statusText: 'Thinking · Codex',
-    }]);
-    try {
-      const tab = createFakeSocket();
-      handleChatConnection(tab, {user: {id: 1}}, {runtime: {
-        hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [],
-      }});
-      tab.emit('message', JSON.stringify({type: 'chat.subscribe', sessions: [{sessionId: 'external-codex'}]}));
-      await settle();
-      assert.equal(tab.frames[0]?.isProcessing, true);
-      assert.equal(tab.frames[0]?.canInterrupt, false);
-      assert.equal(tab.frames[0]?.statusText, 'Thinking · Codex');
-      assert.equal(chatRunRegistry.getRun('external-codex'), undefined);
-    } finally { observer.mock.restore(); }
-  });
-});
-
-test('subscribe re-reads local registry after waiting for native status', async () => {
-  await withIsolatedDatabase(async () => {
-    sessionsDb.createAppSession('race-codex', 'codex', '/tmp/codex-liveness-race');
-    const observer = mock.method(sessionsService, 'listRunningSessions', async () => {
-      chatRunRegistry.startRun({appSessionId: 'race-codex', provider: 'codex', providerSessionId: 'test-native',
-        connection: createFakeSocket(), userId: 1});
-      return [];
+test('a queued detached run inherits the preceding run audience and replay resets across run ids', async () => {
+    await withIsolatedDatabase(async () => {
+        const oldTab = createFakeSocket(), previous = startAndCompleteRun(oldTab);
+        const next = chatRunRegistry.startRun({ appSessionId: SESSION_ID, provider: 'claude', providerSessionId: 'native-1', connection: null, userId: 1 });
+        assert.ok(next);
+        next.writer.send({ id: 'queued-message', kind: 'text', provider: 'claude', sessionId: 'native-1', role: 'assistant', content: 'queued reply' });
+        assert.ok(oldTab.frames.some(f => f.id === 'queued-message'), 'Queued turn must stream to existing browser');
+        assert.notEqual(next.runId, previous.runId);
+        const reconnect = createFakeSocket();
+        handleChatConnection(reconnect, { user: { id: 1 } }, { runtime: { hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [] } });
+        reconnect.emit('message', JSON.stringify({ type: 'chat.subscribe', sessions: [{ sessionId: SESSION_ID, runId: previous.runId, lastSeq: 1000 }] }));
+        await settle();
+        assert.equal(reconnect.frames[0].runId, next.runId);
+        assert.ok(reconnect.frames.some(f => f.id === 'queued-message'), 'Previous run cursor cannot suppress the new run replay');
     });
-    try {
-      const tab = createFakeSocket();
-      handleChatConnection(tab, {user: {id: 1}}, {runtime: {
-        hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [],
-      }});
-      tab.emit('message', JSON.stringify({type: 'chat.subscribe', sessions: [{sessionId: 'race-codex'}]}));
-      await settle();
-      assert.equal(tab.frames[0]?.isProcessing, true);
-      assert.notEqual(tab.frames[0]?.canInterrupt, false);
-      assert.ok(tab.frames[0]?.runId);
-    } finally { observer.mock.restore(); }
-  });
+});
+test('native Codex work is restored in subscribe ack without a local run or abort capability', async () => {
+    await withIsolatedDatabase(async () => {
+        sessionsDb.createAppSession('external-codex', 'codex', '/tmp/codex-liveness-subscribe');
+        const observer = mock.method(sessionsService, 'listRunningSessions', async () => [{
+                sessionId: 'external-codex', provider: 'codex', startedAt: 100, lastSeq: 0,
+                canInterrupt: false, statusText: 'Thinking · Codex',
+            }]);
+        try {
+            const tab = createFakeSocket();
+            handleChatConnection(tab, { user: { id: 1 } }, { runtime: {
+                    hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [],
+                } });
+            tab.emit('message', JSON.stringify({ type: 'chat.subscribe', sessions: [{ sessionId: 'external-codex' }] }));
+            await settle();
+            assert.equal(tab.frames[0]?.isProcessing, true);
+            assert.equal(tab.frames[0]?.canInterrupt, false);
+            assert.equal(tab.frames[0]?.statusText, 'Thinking · Codex');
+            assert.equal(chatRunRegistry.getRun('external-codex'), undefined);
+        }
+        finally {
+            observer.mock.restore();
+        }
+    });
+});
+test('subscribe re-reads local registry after waiting for native status', async () => {
+    await withIsolatedDatabase(async () => {
+        sessionsDb.createAppSession('race-codex', 'codex', '/tmp/codex-liveness-race');
+        const observer = mock.method(sessionsService, 'listRunningSessions', async () => {
+            chatRunRegistry.startRun({ appSessionId: 'race-codex', provider: 'codex', providerSessionId: 'test-native',
+                connection: createFakeSocket(), userId: 1 });
+            return [];
+        });
+        try {
+            const tab = createFakeSocket();
+            handleChatConnection(tab, { user: { id: 1 } }, { runtime: {
+                    hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [],
+                } });
+            tab.emit('message', JSON.stringify({ type: 'chat.subscribe', sessions: [{ sessionId: 'race-codex' }] }));
+            await settle();
+            assert.equal(tab.frames[0]?.isProcessing, true);
+            assert.notEqual(tab.frames[0]?.canInterrupt, false);
+            assert.ok(tab.frames[0]?.runId);
+        }
+        finally {
+            observer.mock.restore();
+        }
+    });
+});
+test('a truncated replay explicitly requests history recovery and a closed tab detaches immediately', async () => {
+    await withIsolatedDatabase(async () => {
+        const run = chatRunRegistry.startRun({ appSessionId: SESSION_ID, provider: 'claude', providerSessionId: 'native-1', connection: null, userId: 1 });
+        for (let i = 0; i < 5005; i++)
+            run.writer.send({ id: `delta-${i}`, kind: 'stream_delta', provider: 'claude', content: 'x' });
+        const tab = createFakeSocket();
+        handleChatConnection(tab, { user: { id: 1 } }, { runtime: { hasBackgroundWork: () => false, getPendingApprovalsForSession: () => [] } });
+        tab.emit('message', JSON.stringify({ type: 'chat.subscribe', sessions: [{ sessionId: SESSION_ID, lastSeq: 0 }] }));
+        await settle();
+        const ack = tab.frames.find(frame => frame.kind === 'chat_subscribed');
+        assert.equal(ack?.replayTruncated, true);
+        assert.equal(ack?.isProcessing, true);
+        const before = tab.frames.length;
+        tab.emit('close');
+        run.writer.send({ kind: 'status', provider: 'claude', text: 'after close' });
+        assert.equal(tab.frames.length, before);
+    });
 });

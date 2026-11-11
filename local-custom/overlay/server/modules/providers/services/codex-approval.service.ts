@@ -40,7 +40,7 @@ export function createCodexApprovalService({
     const run = chatRunRegistry.getRun(id);
     // Async replies can start another turn on the same thread. Suppress only
     // requests belonging to the local writer's turn, not the entire session.
-    return Boolean(run?.status === 'running' && (!turnId || run.events.some(event => (event as AnyRecord).turnId === turnId)));
+    return Boolean(run?.status === 'running' && (!turnId || (run.turnIds.has(turnId) || run.events.some(event => (event as AnyRecord).turnId === turnId))));
   },
 }: Dependencies = {}) {
   const watches = new Map<string, SessionWatch>();

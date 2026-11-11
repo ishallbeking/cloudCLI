@@ -32,6 +32,12 @@ export type AnyRecord = Record<string, any>;
  */
 export type RealtimeClientConnection = {
   readyState: number;
+  /** Optional transport queue size; chat writers disconnect stalled browsers
+   * above their byte budget so a slow client cannot retain every live frame. */
+  bufferedAmount?: number;
+  /** Native websocket termination used for backpressure; test/in-process
+   * clients may omit it when they have no transport queue. */
+  terminate?(): void;
   send(data: string): void;
 };
 

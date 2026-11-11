@@ -10,6 +10,8 @@ const tests=[...(await fs.readdir(new URL('../tests/',import.meta.url))).filter(
   'package/dist-server/server/modules/providers/tests/provider-capabilities.service.test.js',
   'package/dist-server/server/modules/providers/tests/codex-approval.test.js',
   'package/dist-server/server/modules/providers/tests/codex-liveness.test.js',
+  'package/dist-server/server/modules/providers/tests/session-history-cache.service.test.js',
+  'package/dist-server/server/modules/websocket/tests/chat-run-registry.test.js',
   'package/dist-server/server/modules/websocket/tests/chat-background-subscribe.test.js'];
 const child=spawn(process.execPath,['--test',...tests],{cwd:root,env:process.env,stdio:'inherit'});
 child.once('error',error=>{console.error(error.message);process.exitCode=1;});

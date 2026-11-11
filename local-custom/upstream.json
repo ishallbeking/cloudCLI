@@ -32,22 +32,22 @@
     },
     {
       "path": "server/modules/websocket/services/chat-run-registry.service.ts",
-      "sha256": "46913febf00fefb75cea5b207b166a9255cccb04fe6f605c7b1648c1a44f3cd3",
+      "sha256": "2a78a3097f50e07e17ce5912e1bfe539f75efe3fbcf5e7696a012d31c39e02f3",
       "upstreamSha256": "9dabfdaf4c16485027dba69cd62efbeee11b51f209b204c24ae99ca3d321535e"
     },
     {
       "path": "server/modules/websocket/services/chat-session-writer.service.ts",
-      "sha256": "a266590ef22f2121dcab90fcfd7e7eb7343c3f0072998538eb7137e392bc4652",
+      "sha256": "19e12baab477f7e8f1ef2309d0de6d005d5905e7e3e10f1cd84ab5e2b7e44ba4",
       "upstreamSha256": "11cb46d355b3640ff6e665c9b29581f96b4c168d76b1a95e1dcce007f9976de2"
     },
     {
       "path": "server/modules/websocket/services/chat-websocket.service.ts",
-      "sha256": "9c9ac914fd47da37ab2089eefa12616aa1e8f313225ce6594e112b8c84c91239",
+      "sha256": "105f03aad4802e625ee33b60bd50c0653e0c931b6e5ee5237d95b7f0adec4498",
       "upstreamSha256": "37c2eaaaa7fed5a349fb067fde856a324fe7534d4e402866c8213766b5faf525"
     },
     {
       "path": "server/modules/websocket/tests/chat-background-subscribe.test.ts",
-      "sha256": "31712087bb43ca7ae0802b4c71e64745f0719d79643ede7e6e5861ff0bdd1c27",
+      "sha256": "cc3c1f8e194e097c31bcdccc6b64af920a04fd1e6825aa2bb2ebd67b73c80b05",
       "upstreamSha256": "e2bcee673467ef9962d858e7a4d88d5897bc7a41f2084cc1c070d5cfac9fad67"
     },
     {
@@ -172,7 +172,7 @@
     },
     {
       "path": "server/shared/types.ts",
-      "sha256": "154e8056afe27e4f16c889ff2dfe0cb27420d519b36c40e69788681f3856a87a",
+      "sha256": "4eeb20934f0c4dabbfb4d867a0c8f24a31e1fa5a8e0a30293d0071f68d9319b1",
       "upstreamSha256": "2e527e7a528e23a829c7a7df0e602224e9d37dab4da8a2152949d7e1ae38de92"
     },
     {
@@ -202,22 +202,22 @@
     },
     {
       "path": "dist-server/server/modules/websocket/services/chat-run-registry.service.js",
-      "sha256": "fc0935d61181d6e9578b5d86342a0d280f33bcfcfc0c6b480b0684a8cbf5085f",
+      "sha256": "ebf1e8d233e324630694925a01d3ac70172537ee0c5b3752fc8f6c42fac204be",
       "upstreamSha256": "a6716487fea6b6ae06e7c5439a84e0ba4194185859d2740d68e18207980041cb"
     },
     {
       "path": "dist-server/server/modules/websocket/services/chat-session-writer.service.js",
-      "sha256": "6b160fdd53406a834581f07c21f4d8e741ca435cb688f6f13339140666d9b21a",
+      "sha256": "e7f4b9368f197ee055715f5df57830a0f6b60c23f8fa337da5e062aad2869b95",
       "upstreamSha256": "2a93df88c1443a454c0a7b41344373fa42d247a231048510f98f2be36c4f900c"
     },
     {
       "path": "dist-server/server/modules/websocket/services/chat-websocket.service.js",
-      "sha256": "9033c6a914b24248c2fb55fb4f96a693863c613967095968a61942a7e44220e3",
+      "sha256": "71dcc9f411201d5025dea69b0f745fd98b596afd812ca6dd3a611c7cef97c993",
       "upstreamSha256": "58ec3d159405399fedca9f450f81e64818bfba1e89e78b7c6bf73e28ec02fb11"
     },
     {
       "path": "dist-server/server/modules/websocket/tests/chat-background-subscribe.test.js",
-      "sha256": "e62558e50a56d3e8340029d7f653337a917f3b55f5176368415942f7614b62a6",
+      "sha256": "4f24ba466d3358d8fca93cc392f6f50f60b8d1089612a6dd851ce89af648ec57",
       "upstreamSha256": "d6b375988e0e4b8af9534af2f69603a3bf92c224ffd67b1f434f14fa8e2e4a2a"
     },
     {
@@ -377,7 +377,7 @@
     },
     {
       "path": "server/modules/providers/services/codex-approval.service.ts",
-      "sha256": "26323460567b22f4d8449d5faf173e049746de9339c275b44c39720b76cf9160",
+      "sha256": "eb01e78c62974d963921c00bb513339ca8db3632d68bf6ceed798cdb4860616d",
       "upstreamSha256": null
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/services/codex-approval.service.js",
-      "sha256": "d32cebe52ba0252b93918f3bf5cb849b6e2ae7252767b30d1866407b99a10177",
+      "sha256": "ab2f8526a78c669928342d78f3ffccd4b1f88acbf9409265afc731ed83f04737",
       "upstreamSha256": null
     },
     {
@@ -404,6 +404,36 @@
       "path": "dist-server/server/modules/providers/index.js",
       "sha256": "9dd08a5242a10dbd02d328793c88017c22581d0a7ebf09327333bb2e971b356f",
       "upstreamSha256": "48355188536979219c91843db69f2976008cf801757359f54cd5f233042bfbc8"
+    },
+    {
+      "path": "server/modules/websocket/tests/chat-run-registry.test.ts",
+      "sha256": "b69986d3bc0bb2b9e706783fa9f163e93748edea43aa2df1847b0a6dee3548f8",
+      "upstreamSha256": "1892f0798ae3b00a978c2ef8e3f02fed213f9ef22748247f7322008f0ad5e3cb"
+    },
+    {
+      "path": "server/modules/providers/services/session-history-cache.service.ts",
+      "sha256": "2bef8dc799f2adce5a0753ae583df5a702e7e008ed86c6f67bcbb6fb5ae3574b",
+      "upstreamSha256": "2b067c034f9becb3bc0a2ade2546cfbaa28a031dd8ce16bf8a2d28b4a478fd01"
+    },
+    {
+      "path": "server/modules/providers/tests/session-history-cache.service.test.ts",
+      "sha256": "c8544a3604f0872b6d71ad5d8d11355aaf63a916bb3e21a53e256db49819a33d",
+      "upstreamSha256": "49c75771cf45ed1e6396eb187738975a5c9b52bef02d696b3c80a8ee8a41310f"
+    },
+    {
+      "path": "dist-server/server/modules/websocket/tests/chat-run-registry.test.js",
+      "sha256": "6eaeef99e3096cfd785dc7f9aaf7bcda11f0c3fdf6e03624312811ce2d70c0b9",
+      "upstreamSha256": "e22194b0c88ef4bcc91654304d16e6181e8ee66516023f76b52e72f3576e4395"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/session-history-cache.service.js",
+      "sha256": "7e1162d23fb69736e8bb518a6e56e2551249398d209fa93debeda9959c42e78a",
+      "upstreamSha256": "8ff137e56d4dce7e76ce0c633f9d38c83ed6c73c8562dd348e2a6ede644f31f4"
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/session-history-cache.service.test.js",
+      "sha256": "6b154720181b5517f1b298d27509f46ddb23b493323ab22be4c3c455c9d3b021",
+      "upstreamSha256": "c366fb1e281470b37fb73367463e77c182b024f12bc686594ff54d8f579319e2"
     }
   ]
 }

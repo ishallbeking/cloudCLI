@@ -86,13 +86,19 @@ CLOUDCLI_CLAUDE_PROVIDER_ENV=/absolute/path/to/private-provider-env.sh
 
 已有安装包可通过 `CLOUDCLI_UPSTREAM_ARCHIVE=/path/to/cloudcli-1.37.7.tgz` 供准备脚本使用；仍会校验完整性。`--skip-deps` 只供已装好运行依赖的离线检查，不是首次部署方式。
 
+## 内存占用修复（2026-11-11）
+
+Codex 流式消息的重放缓存按稳定消息 ID 合并完整快照，避免保存不断增长的重复全文。单回合缓冲最多 8 MiB、共享缓冲最多 64 MiB；被裁剪的重放通过历史接口恢复。真实内容和会话文件不截断。替换回合会取消旧清理定时器并释放缓冲，关闭网页会立即移除连接，慢速连接超过 8 MiB 发送队列后重连恢复。历史缓存同时限制磁盘与规范化内容体积，超预算结果不驻留缓存。
+
+独立 128 MiB 堆测试中，原实现约 400 次累积更新后 OOM；修复后完成 800 次更新，回收后约 21 MiB。连续模拟 2000 次回合替换，回收后约 20 MiB，未随批次增长。这些是有限压力测试结果，不能代替长期运行观察。
+
 ## 验证
 
 ```bash
 node local-custom/scripts/test.mjs
 ```
 
-导出时从官方安装包独立重建，**98 项测试通过**；前端生成资源与当前部署一致。覆盖异步提问、审核、模型同步、消息关联、压缩历史、上下文占用、数据库锁以及文件树和复制 API。
+导出时从官方安装包独立重建，**135 项测试通过**；前端生成资源与当前部署一致。覆盖异步提问、审核、模型同步、消息关联、压缩历史、上下文占用、数据库锁以及文件树和复制 API。
 
 浏览器用例 `design/review-file-copy.mjs` 和 `design/review-file-sort.mjs` 使用 Playwright。需要时自行安装 `playwright-core` 并将 Chromium 放在 `design/chromium`；通过 `CLOUDCLI_TEST_URL`、`CLOUDCLI_TEST_PROJECT_PATH`、`CLOUDCLI_TEST_PROJECT_NAME` 指定测试服务和已有项目。复制用例只修改其自行创建的临时目录，排序用例只读页面并注入固定元数据；不发送模型消息。
 

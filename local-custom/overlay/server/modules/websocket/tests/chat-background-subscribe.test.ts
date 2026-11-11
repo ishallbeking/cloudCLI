@@ -227,3 +227,21 @@ test('subscribe re-reads local registry after waiting for native status', async 
     } finally { observer.mock.restore(); }
   });
 });
+
+test('a truncated replay explicitly requests history recovery and a closed tab detaches immediately', async () => {
+  await withIsolatedDatabase(async () => {
+    const run = chatRunRegistry.startRun({appSessionId: SESSION_ID, provider: 'claude', providerSessionId: 'native-1', connection: null, userId: 1})!;
+    for (let i = 0; i < 5005; i++) run.writer.send({id: `delta-${i}`, kind: 'stream_delta', provider: 'claude', content: 'x'});
+    const tab = createFakeSocket();
+    handleChatConnection(tab as never, {user: {id: 1}} as never, {runtime: {hasBackgroundWork: () => false, getPendingApprovalsForSession: () => []} as never});
+    tab.emit('message', JSON.stringify({type: 'chat.subscribe', sessions: [{sessionId: SESSION_ID, lastSeq: 0}]}));
+    await settle();
+    const ack = tab.frames.find(frame => frame.kind === 'chat_subscribed');
+    assert.equal(ack?.replayTruncated, true);
+    assert.equal(ack?.isProcessing, true);
+    const before = tab.frames.length;
+    tab.emit('close');
+    run.writer.send({kind: 'status', provider: 'claude', text: 'after close'});
+    assert.equal(tab.frames.length, before);
+  });
+});

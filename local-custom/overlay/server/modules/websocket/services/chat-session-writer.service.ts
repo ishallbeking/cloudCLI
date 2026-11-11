@@ -6,6 +6,8 @@ import type {
 } from '@/shared/types.js';
 import { createCompleteMessage, readObjectRecord } from '@/shared/utils.js';
 
+const MAX_SOCKET_BUFFERED_BYTES = 8 * 1024 * 1024;
+
 type ChatSessionWriterOptions = {
   connection: RealtimeClientConnection | null;
   userId: string | number | null;
@@ -72,7 +74,7 @@ export class ChatSessionWriter {
   private providerSessionId: string | null;
 
   constructor(options: ChatSessionWriterOptions) {
-    this.options = options;
+    this.options = {...options, connection: null};
     // A run started by a timer has no audience yet. Everything still goes
     // through `decorateOutboundEvent` into the run's replay buffer, so a
     // client that subscribes mid-run catches up from the beginning.
@@ -147,6 +149,16 @@ export class ChatSessionWriter {
     }
   }
 
+  /** The gateway drops closed sockets immediately, even during an idle turn. */
+  removeConnection(connection: RealtimeClientConnection): void {
+    this.connections.delete(connection);
+  }
+
+  /** Release the run audience when a retained run is replaced or evicted. */
+  clearConnections(): void {
+    this.connections.clear();
+  }
+
   setSessionId(sessionId: string): void {
     this.captureProviderSessionId(sessionId);
   }
@@ -173,7 +185,14 @@ export class ChatSessionWriter {
     // for a Set — the removed entry is simply not revisited.
     for (const connection of this.connections) {
       if (connection.readyState === WS_OPEN_STATE) {
-        connection.send(payload);
+        if ((connection.bufferedAmount ?? 0) > MAX_SOCKET_BUFFERED_BYTES) {
+          // Reconnect uses durable history plus the bounded replay buffer.
+          this.connections.delete(connection);
+          connection.terminate?.();
+          continue;
+        }
+        try { connection.send(payload); }
+        catch { this.connections.delete(connection); connection.terminate?.(); }
       } else {
         this.connections.delete(connection);
       }

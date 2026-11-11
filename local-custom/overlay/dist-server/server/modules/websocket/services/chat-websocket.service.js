@@ -1,10 +1,10 @@
 import path from 'node:path';
-import { sessionsDb } from '../../../modules/database/index.js';
-import { providerModelsService, sessionsService, codexApprovalService } from '../../../modules/providers/index.js';
-import { chatRunRegistry } from '../../../modules/websocket/services/chat-run-registry.service.js';
-import { connectedClients, WS_OPEN_STATE } from '../../../modules/websocket/services/websocket-state.service.js';
-import { getGlobalImageAssetsDir, isImageAttachmentDescriptor, normalizeAttachmentDescriptors, } from '../../../shared/image-attachments.js';
-import { parseIncomingJsonObject } from '../../../shared/utils.js';
+import { sessionsDb } from './../../database/index.js';
+import { providerModelsService, sessionsService, codexApprovalService } from './../../providers/index.js';
+import { chatRunRegistry } from './chat-run-registry.service.js';
+import { connectedClients, WS_OPEN_STATE } from './websocket-state.service.js';
+import { getGlobalImageAssetsDir, isImageAttachmentDescriptor, normalizeAttachmentDescriptors, } from './../../../shared/image-attachments.js';
+import { parseIncomingJsonObject } from './../../../shared/utils.js';
 /**
  * Trust boundary for client-supplied image attachments: chat.send options come
  * straight from the browser, and the provider runtimes read the referenced
@@ -357,7 +357,8 @@ async function handleChatSubscribe(ws, data, dependencies) {
             : 0;
         // The native Codex daemon outlives this WebUI process and also serves the CLI.
         const session = sessionsDb.getSessionById(sessionId);
-    if (session?.provider === 'codex') await codexApprovalService.watchSession(sessionId, ws);
+        if (session?.provider === 'codex')
+            await codexApprovalService.watchSession(sessionId, ws);
         const external = !chatRunRegistry.isProcessing(sessionId) && session?.provider === 'codex'
             ? (await sessionsService.listRunningSessions()).find(entry => entry.sessionId === sessionId)
             : undefined;
@@ -375,12 +376,15 @@ async function handleChatSubscribe(ws, data, dependencies) {
         }
         // Pending approvals are tracked under the app session id inside the
         // Claude runtime, so they can be looked up directly.
+        const replayAfterSeq = target.runId && target.runId !== run?.runId ? 0 : lastSeq;
+        const replayTruncated = Boolean(run && replayAfterSeq < run.replayDroppedThroughSeq);
         const pendingPermissions = [...dependencies.runtime.getPendingApprovalsForSession(sessionId), ...codexApprovalService.listPending(sessionId)];
         sendJson(ws, {
             kind: 'chat_subscribed',
+            replayTruncated,
             sessionId,
             isProcessing: isProcessing || Boolean(external),
-            ...(external && !isProcessing ? {canInterrupt: false, statusText: external.statusText} : {}),
+            ...(external && !isProcessing ? { canInterrupt: false, statusText: external.statusText } : {}),
             lastSeq: run?.lastSeq ?? 0,
             runId: run?.runId, runStartedAt: run?.startedAt,
             pendingPermissions,
@@ -412,7 +416,8 @@ function handlePermissionResponse(data, dependencies) {
         message: typeof data.message === 'string' ? data.message : undefined,
         rememberEntry: data.rememberEntry,
     };
-  if (!codexApprovalService.resolve(data.requestId, decision)) dependencies.runtime.resolveToolApproval(data.requestId, decision);
+    if (!codexApprovalService.resolve(data.requestId, decision))
+        dependencies.runtime.resolveToolApproval(data.requestId, decision);
 }
 /**
  * Handles authenticated chat websocket messages used by the main chat panel.
@@ -514,7 +519,7 @@ export function handleChatConnection(ws, request, dependencies) {
     ws.on('close', () => {
         console.log('[INFO] Chat client disconnected');
         codexApprovalService.unwatchConnection(ws);
-    connectedClients.delete(ws);
+        chatRunRegistry.detachConnection(ws);
+        connectedClients.delete(ws);
     });
 }
-//# sourceMappingURL=chat-websocket.service.js.map

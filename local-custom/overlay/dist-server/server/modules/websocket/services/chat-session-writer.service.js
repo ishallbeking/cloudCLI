@@ -1,5 +1,6 @@
-import { WS_OPEN_STATE } from '../../../modules/websocket/services/websocket-state.service.js';
-import { createCompleteMessage, readObjectRecord } from '../../../shared/utils.js';
+import { WS_OPEN_STATE } from './websocket-state.service.js';
+import { createCompleteMessage, readObjectRecord } from './../../../shared/utils.js';
+const MAX_SOCKET_BUFFERED_BYTES = 8 * 1024 * 1024;
 /**
  * Gateway writer handed to provider runtimes instead of a raw websocket writer.
  *
@@ -43,7 +44,7 @@ export class ChatSessionWriter {
      */
     providerSessionId;
     constructor(options) {
-        this.options = options;
+        this.options = { ...options, connection: null };
         // A run started by a timer has no audience yet. Everything still goes
         // through `decorateOutboundEvent` into the run's replay buffer, so a
         // client that subscribes mid-run catches up from the beginning.
@@ -103,10 +104,20 @@ export class ChatSessionWriter {
     updateWebSocket(newConnection) {
         this.connections.add(newConnection);
     }
+    /** Keep a session's live audience when a queued/detached turn replaces its run. */
     copyConnectionsTo(writer) {
         for (const connection of this.connections) {
-            if (connection.readyState === WS_OPEN_STATE) writer.updateWebSocket(connection);
+            if (connection.readyState === WS_OPEN_STATE)
+                writer.updateWebSocket(connection);
         }
+    }
+    /** The gateway drops closed sockets immediately, even during an idle turn. */
+    removeConnection(connection) {
+        this.connections.delete(connection);
+    }
+    /** Release the run audience when a retained run is replaced or evicted. */
+    clearConnections() {
+        this.connections.clear();
     }
     setSessionId(sessionId) {
         this.captureProviderSessionId(sessionId);
@@ -129,7 +140,19 @@ export class ChatSessionWriter {
         // for a Set — the removed entry is simply not revisited.
         for (const connection of this.connections) {
             if (connection.readyState === WS_OPEN_STATE) {
-                connection.send(payload);
+                if ((connection.bufferedAmount ?? 0) > MAX_SOCKET_BUFFERED_BYTES) {
+                    // Reconnect uses durable history plus the bounded replay buffer.
+                    this.connections.delete(connection);
+                    connection.terminate?.();
+                    continue;
+                }
+                try {
+                    connection.send(payload);
+                }
+                catch {
+                    this.connections.delete(connection);
+                    connection.terminate?.();
+                }
             }
             else {
                 this.connections.delete(connection);
@@ -137,4 +160,3 @@ export class ChatSessionWriter {
         }
     }
 }
-//# sourceMappingURL=chat-session-writer.service.js.map

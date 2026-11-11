@@ -32,6 +32,10 @@ type ChatRun = {
   status: ChatRunStatus;
   lastSeq: number;
   events: NormalizedMessage[];
+  bufferedBytes: number;
+  replayDroppedThroughSeq: number;
+  turnIds: Set<string>;
+  evictionTimer: ReturnType<typeof setTimeout> | null;
   writer: ChatSessionWriter;
   startedAt: number;
   completedAt: number | null;
@@ -51,6 +55,40 @@ const COMPLETED_RUN_RETENTION_MS = 5 * 60 * 1000;
  * REST history refresh, which is always the authoritative source.
  */
 const MAX_BUFFERED_EVENTS_PER_RUN = 5000;
+// Count alone is insufficient: Codex emits cumulative snapshots on every delta.
+const MAX_BUFFERED_BYTES_PER_RUN = 8 * 1024 * 1024;
+const MAX_BUFFERED_BYTES_TOTAL = 64 * 1024 * 1024;
+const eventCosts = new WeakMap<NormalizedMessage, number>();
+
+function removeBufferedEvent(run: ChatRun, index: number, lost: boolean): void {
+  const [event] = run.events.splice(index, 1);
+  run.bufferedBytes -= eventCosts.get(event) ?? 0;
+  if (lost) run.replayDroppedThroughSeq = Math.max(run.replayDroppedThroughSeq, event.seq ?? 0);
+}
+
+function releaseRun(run: ChatRun): void {
+  if (run.evictionTimer) clearTimeout(run.evictionTimer);
+  run.evictionTimer = null;
+  run.events.length = 0;
+  run.bufferedBytes = 0;
+  run.writer.clearConnections();
+}
+
+function boundReplayMemory(run: ChatRun): void {
+  while (run.events.length > MAX_BUFFERED_EVENTS_PER_RUN || run.bufferedBytes > MAX_BUFFERED_BYTES_PER_RUN) {
+    removeBufferedEvent(run, 0, true);
+  }
+  let total = [...runs.values()].reduce((sum, entry) => sum + entry.bufferedBytes, 0);
+  // Evict the globally oldest buffered event, never an active run itself.
+  while (total > MAX_BUFFERED_BYTES_TOTAL) {
+    const oldest = [...runs.values()].filter(entry => entry.events.length)
+      .sort((a, b) => a.startedAt - b.startedAt || (a.events[0].seq ?? 0) - (b.events[0].seq ?? 0))[0];
+    if (!oldest) break;
+    const cost = eventCosts.get(oldest.events[0]) ?? 0;
+    removeBufferedEvent(oldest, 0, true);
+    total -= cost;
+  }
+}
 
 /**
  * Active and recently-completed runs keyed by app session id.
@@ -77,7 +115,9 @@ let retainCompletedRun: (appSessionId: string) => boolean = () => false;
  * the slot alone would evict that newer run early.
  */
 function evictRunLater(run: ChatRun): void {
+  if (run.evictionTimer) clearTimeout(run.evictionTimer);
   const timer = setTimeout(() => {
+    run.evictionTimer = null;
     if (runs.get(run.appSessionId) !== run || run.status !== 'completed') {
       return;
     }
@@ -86,9 +126,11 @@ function evictRunLater(run: ChatRun): void {
       return;
     }
     runs.delete(run.appSessionId);
+    releaseRun(run);
   }, COMPLETED_RUN_RETENTION_MS);
 
   // Never keep the process alive just to evict a buffered run.
+  run.evictionTimer = timer;
   timer.unref?.();
 }
 
@@ -129,10 +171,18 @@ function decorateAndRecordEvent(run: ChatRun, message: NormalizedMessage): Norma
     evictRunLater(run);
   }
 
-  run.events.push(outbound);
-  if (run.events.length > MAX_BUFFERED_EVENTS_PER_RUN) {
-    run.events.splice(0, run.events.length - MAX_BUFFERED_EVENTS_PER_RUN);
+  const turnId = (message as NormalizedMessage & {turnId?: string}).turnId;
+  if (turnId) run.turnIds.add(turnId);
+  // A text/tool-result snapshot replaces its earlier full snapshot. Deltas and
+  // permission lifecycle events are never coalesced. Keep sequence order.
+  if (run.provider === 'codex' && outbound.id && ['text', 'tool_result'].includes(outbound.kind)) {
+    const previous = run.events.findIndex(event => event.id === outbound.id && event.kind === outbound.kind);
+    if (previous >= 0) removeBufferedEvent(run, previous, false);
   }
+  eventCosts.set(outbound, 2 * Buffer.byteLength(JSON.stringify(outbound), 'utf8') + 512);
+  run.events.push(outbound);
+  run.bufferedBytes += eventCosts.get(outbound)!;
+  boundReplayMemory(run);
 
   return outbound;
 }
@@ -217,6 +267,10 @@ export const chatRunRegistry = {
       status: 'running',
       lastSeq: 0,
       events: [],
+      bufferedBytes: 0,
+      replayDroppedThroughSeq: 0,
+      turnIds: new Set(),
+      evictionTimer: null,
       writer: null as unknown as ChatSessionWriter,
       startedAt: Date.now(),
       completedAt: null,
@@ -234,6 +288,7 @@ export const chatRunRegistry = {
     });
 
     existing?.writer.copyConnectionsTo(run.writer);
+    if (existing) releaseRun(existing);
     runs.set(input.appSessionId, run);
     return run;
   },
@@ -330,10 +385,14 @@ export const chatRunRegistry = {
     run.writer.sendComplete(opts);
   },
 
-  /**
-   * Test-only escape hatch: clears every tracked run.
-   */
+  /** The websocket gateway releases closed tabs without waiting for another event. */
+  detachConnection(connection: RealtimeClientConnection): void {
+    for (const run of runs.values()) run.writer.removeConnection(connection);
+  },
+
+  /** Test-only cleanup also cancels eviction timers and releases buffered payloads. */
   clearAll(): void {
+    for (const run of runs.values()) releaseRun(run);
     runs.clear();
   },
 };
