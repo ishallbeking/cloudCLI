@@ -1,3 +1,4 @@
+import { sessionRenameService } from './session-rename.service.js';
 import { listBusyCodexSessions } from './codex-liveness.service.js';
 import { randomUUID } from 'node:crypto';
 import fsp from 'node:fs/promises';
@@ -760,16 +761,7 @@ export const sessionsService = {
   /**
    * Renames one session by id without requiring the caller to pass provider.
    */
-  renameSessionById(sessionId: string, summary: string): { sessionId: string; summary: string } {
-    const session = sessionsDb.getSessionById(sessionId);
-    if (!session) {
-      throw new AppError(`Session "${sessionId}" was not found.`, {
-        code: 'SESSION_NOT_FOUND',
-        statusCode: 404,
-      });
-    }
-
-    sessionsDb.updateSessionCustomName(sessionId, summary);
-    return { sessionId, summary };
+  async renameSessionById(sessionId: string, summary: string): Promise<{ sessionId: string; summary: string }> {
+    return sessionRenameService.renameSessionById(sessionId, summary);
   },
 };

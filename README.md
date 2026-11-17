@@ -71,7 +71,7 @@ cp local-custom/.env.example local-custom/env.local
 node local-custom/scripts/test.mjs
 ```
 
-当前导出版本 **98 项回归测试通过**，并已在独立端口验证启动、页面访问、主题加载与关闭。具体测试范围和浏览器验证方式见[验证说明](local-custom/README.md#验证)。
+当前导出版本 **165 项回归测试通过**，并已在独立端口验证启动、页面访问、主题加载与关闭。具体测试范围和浏览器验证方式见[验证说明](local-custom/README.md#验证)。
 
 ## 上游与许可证
 

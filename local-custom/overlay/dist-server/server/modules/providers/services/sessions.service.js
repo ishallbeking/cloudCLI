@@ -1,13 +1,14 @@
+import { sessionRenameService } from './session-rename.service.js';
 import { listBusyCodexSessions } from './codex-liveness.service.js';
 import { randomUUID } from 'node:crypto';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { projectsDb, sessionsDb } from '../../../modules/database/index.js';
-import { broadcastSessionUpserted, chatRunRegistry } from '../../../modules/websocket/index.js';
-import { providerRegistry } from '../../../modules/providers/provider.registry.js';
-import { listBusyClaudeCliSessions } from '../../../modules/providers/services/claude-cli-liveness.service.js';
-import { sessionHistoryCache } from '../../../modules/providers/services/session-history-cache.service.js';
-import { AppError, sliceTailPage } from '../../../shared/utils.js';
+import { projectsDb, sessionsDb } from './../../database/index.js';
+import { broadcastSessionUpserted, chatRunRegistry } from './../../websocket/index.js';
+import { providerRegistry } from './../provider.registry.js';
+import { listBusyClaudeCliSessions } from './claude-cli-liveness.service.js';
+import { sessionHistoryCache } from './session-history-cache.service.js';
+import { AppError, sliceTailPage } from './../../../shared/utils.js';
 const MAX_CLOUDCLI_SESSION_NAME_WORDS = 4;
 function buildCloudCliSessionName(initialMessage) {
     const words = initialMessage.trim().split(/\s+/).filter(Boolean);
@@ -111,15 +112,16 @@ export const sessionsService = {
             runningById.set(session.session_id, entries[entries.length - 1]);
         }
         for (const live of await listBusyCodexSessions()) {
-          const session = sessionsDb.getSessionByProviderSessionId(live.providerSessionId);
-          if (!session || session.provider !== 'codex' || runningById.has(session.session_id)) continue;
-          // The native daemon may still be working after WebUI lost its registry.
-          // Report it without offering an abort that this process cannot perform.
-          const entry = {sessionId: session.session_id, provider: 'codex',
-            startedAt: live.startedAt, lastSeq: 0, canInterrupt: false,
-            statusText: live.statusText};
-          entries.push(entry);
-          runningById.set(session.session_id, entry);
+            const session = sessionsDb.getSessionByProviderSessionId(live.providerSessionId);
+            if (!session || session.provider !== 'codex' || runningById.has(session.session_id))
+                continue;
+            // The native daemon may still be working after WebUI lost its registry.
+            // Report it without offering an abort that this process cannot perform.
+            const entry = { sessionId: session.session_id, provider: 'codex',
+                startedAt: live.startedAt, lastSeq: 0, canInterrupt: false,
+                statusText: live.statusText };
+            entries.push(entry);
+            runningById.set(session.session_id, entry);
         }
         return entries;
     },
@@ -586,16 +588,7 @@ export const sessionsService = {
     /**
      * Renames one session by id without requiring the caller to pass provider.
      */
-    renameSessionById(sessionId, summary) {
-        const session = sessionsDb.getSessionById(sessionId);
-        if (!session) {
-            throw new AppError(`Session "${sessionId}" was not found.`, {
-                code: 'SESSION_NOT_FOUND',
-                statusCode: 404,
-            });
-        }
-        sessionsDb.updateSessionCustomName(sessionId, summary);
-        return { sessionId, summary };
+    async renameSessionById(sessionId, summary) {
+        return sessionRenameService.renameSessionById(sessionId, summary);
     },
 };
-//# sourceMappingURL=sessions.service.js.map

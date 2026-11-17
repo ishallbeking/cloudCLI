@@ -1,17 +1,17 @@
-import express from 'express';
+import express, {} from 'express';
 import { codexQuestionRouter } from './list/codex/codex-question.routes.js';
 import { conversationNavigationRouter } from './conversation-navigation.routes.js';
-import { providerAuthService } from '../../modules/providers/services/provider-auth.service.js';
-import { claudeSettingsPermissionsService } from '../../modules/providers/services/claude-settings-permissions.service.js';
-import { providerCapabilitiesService } from '../../modules/providers/services/provider-capabilities.service.js';
-import { providerCliService } from '../../modules/providers/services/provider-cli.service.js';
-import { providerMcpService } from '../../modules/providers/services/mcp.service.js';
-import { providerModelsService } from '../../modules/providers/services/provider-models.service.js';
-import { providerTokenUsageService } from '../../modules/providers/services/provider-token-usage.service.js';
-import { providerSkillsService } from '../../modules/providers/services/skills.service.js';
-import { sessionConversationsSearchService } from '../../modules/providers/services/session-conversations-search.service.js';
-import { sessionsService } from '../../modules/providers/services/sessions.service.js';
-import { AppError, asyncHandler, createApiSuccessResponse } from '../../shared/utils.js';
+import { providerAuthService } from './services/provider-auth.service.js';
+import { claudeSettingsPermissionsService } from './services/claude-settings-permissions.service.js';
+import { providerCapabilitiesService } from './services/provider-capabilities.service.js';
+import { providerCliService } from './services/provider-cli.service.js';
+import { providerMcpService } from './services/mcp.service.js';
+import { providerModelsService } from './services/provider-models.service.js';
+import { providerTokenUsageService } from './services/provider-token-usage.service.js';
+import { providerSkillsService } from './services/skills.service.js';
+import { sessionConversationsSearchService } from './services/session-conversations-search.service.js';
+import { sessionsService } from './services/sessions.service.js';
+import { AppError, asyncHandler, createApiSuccessResponse } from './../../shared/utils.js';
 const router = express.Router();
 router.use(codexQuestionRouter);
 router.use(conversationNavigationRouter);
@@ -737,7 +737,7 @@ router.post('/sessions/:sessionId/fork', asyncHandler(async (req, res) => {
 router.put('/sessions/:sessionId', asyncHandler(async (req, res) => {
     const sessionId = parseSessionId(req.params.sessionId);
     const summary = parseSessionRenameSummary(req.body);
-    const result = sessionsService.renameSessionById(sessionId, summary);
+    const result = await sessionsService.renameSessionById(sessionId, summary);
     res.json(createApiSuccessResponse(result));
 }));
 router.get('/sessions/:sessionId/messages', asyncHandler(async (req, res) => {
@@ -815,4 +815,3 @@ router.get('/search/sessions', asyncHandler(async (req, res) => {
     }
 }));
 export default router;
-//# sourceMappingURL=provider.routes.js.map
