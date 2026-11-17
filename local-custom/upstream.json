@@ -337,12 +337,12 @@
     },
     {
       "path": "public/styles/cloudcli-modern.css",
-      "sha256": "13ff2c6ace6162e4db16d53920562fef2787a194985dd61268a914872c4e5a2b",
+      "sha256": "02f2405753d3a0d59ee39e70e5436fd7abf0188a058b24e7eb5f5b913f1deece",
       "upstreamSha256": null
     },
     {
       "path": "dist/index.html",
-      "sha256": "5db978e71bc76f2004d3c8829ad7bc1295b27b75f30cdb1d46b42293f2465405",
+      "sha256": "18c428150979f1f45f949aea088adcb98b385787ad32c3068928ec10de7a6763",
       "upstreamSha256": "131ac7a339c52716b55133ef87555e348c1caf31943240d68b201ff8e3fc8946"
     },
     {

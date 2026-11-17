@@ -439,3 +439,72 @@ input:not([type="checkbox"]):not([type="radio"]), select {
 .cloudcli-context-tooltip > span { display: block; margin-top: 4px; color: hsl(var(--muted-foreground)); font-size: 10px; }
 .cloudcli-context-meter:hover .cloudcli-context-tooltip, .cloudcli-context-meter:focus .cloudcli-context-tooltip { display: block; }
 @media (prefers-reduced-motion: reduce) { .cloudcli-context-progress { transition: none; } }
+
+/* Composer activity is a separate row with the same bounds as the input.
+   The upstream 868px absolute tab strip overhangs our 850px composer by 9px
+   on either side; normal flow also reserves room above the writing surface. */
+.chat-composer-shell > .pointer-events-none.absolute:has(.chat-activity-tab) {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  transform: none;
+}
+.chat-composer-shell > .pointer-events-none.absolute:not(:has(.chat-activity-tab)) {
+  display: none;
+}
+.chat-composer-shell .chat-activity-enter,
+.chat-composer-shell .chat-activity-exit {
+  padding-bottom: 8px;
+}
+.chat-composer-shell .chat-activity-enter { animation-name: cloudcli-composer-activity-enter; }
+.chat-composer-shell .chat-activity-exit { animation-name: cloudcli-composer-activity-exit; }
+.chat-composer-shell .chat-activity-enter > div,
+.chat-composer-shell .chat-activity-exit > div { align-items: center; }
+.chat-composer-shell .chat-activity-tab {
+  height: 28px;
+  min-width: 0;
+  border: 1px solid hsl(var(--border) / .8);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: hsl(var(--card));
+  box-shadow: none;
+  clip-path: none;
+  font-size: 11px;
+  line-height: 1;
+}
+.chat-composer-shell div.chat-activity-tab {
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+.chat-composer-shell div.chat-activity-tab > .font-medium {
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.chat-composer-shell button.chat-activity-tab {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.chat-composer-shell button.chat-activity-tab:hover {
+  border-color: hsl(var(--destructive) / .25);
+  background: hsl(var(--destructive) / .04);
+}
+@keyframes cloudcli-composer-activity-enter {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cloudcli-composer-activity-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(3px); }
+}
+@media (max-width: 767px) {
+  .chat-composer-shell .chat-activity-tab { height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-composer-shell .chat-activity-enter,
+  .chat-composer-shell .chat-activity-exit { animation: none; }
+}
