@@ -57,7 +57,7 @@
     },
     {
       "path": "server/modules/providers/provider.routes.ts",
-      "sha256": "f369dc4dc186f83049f7577842abdefc67ae17ce6f15fa939027d36f75235705",
+      "sha256": "23c1659e9a8335de5ec7042d0e18098af89a16a97641b7d6adba6d1a2e35e13a",
       "upstreamSha256": "176ac02b92b88e62861a7d58e7f0d9ba55ef9e4caeb91bd02ad705d79178a4aa"
     },
     {
@@ -222,7 +222,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/provider.routes.js",
-      "sha256": "65e640315ac33d0f730d36fd6b671e91ae3b7027111e5ed0379436c714764c94",
+      "sha256": "0c7c16ca7d99a10016d17d21f0dd0545dc8cd7ba1c4ee7b862d0ce1b65965d63",
       "upstreamSha256": "6b0c65ed1fc14572ef4e0e442009326270ed1ee2c61e9ba2bc29a1016e8c9c09"
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "path": "server/shared/index.ts",
-      "sha256": "8b4e1e19590701324eb90b7915a7a392c287c5c7ed76b0a80e24a09d95bf5c2e",
+      "sha256": "aa57cc694bac543e3fb89a8dbac2876d1718623ce0f552395313cb203a55d4f2",
       "upstreamSha256": "a204c0dff755c749c3854a0a9171d0cca7420155e88c86fc0a8771f34802bfae"
     },
     {
@@ -472,8 +472,58 @@
     },
     {
       "path": "dist-server/server/shared/index.js",
-      "sha256": "28b74005682979feea14c83a8291fdddf057467f58934c7d2e10fd64e63348a2",
+      "sha256": "a6c7dd1ff3edb9077aac5a1b13d6735ed3e043ecc324a20d08a7f33601eb8cfe",
       "upstreamSha256": "2dc2997197ed2139a2d0484a10eead5ea16baa0b93e499d41eda53c4b43cc033"
+    },
+    {
+      "path": "server/modules/database/repositories/session-groups.db.ts",
+      "sha256": "1f34b912217bd4829474c15a27a1f10ea1a77254e5c92906006e326ec7cca67d",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/database/index.ts",
+      "sha256": "d63755245704665923403687d88fbb5002133ceb4721fcfb52cf072132db0642",
+      "upstreamSha256": "44f041d67504066dd3033342432e4a4bffac665bd6e2172857d6f55aaa5b0599"
+    },
+    {
+      "path": "server/modules/providers/services/session-groups.service.ts",
+      "sha256": "9568453a8174af22345315125e371508fe7ceccd85d35d8de42d64f4f3d163b4",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/session-groups.routes.ts",
+      "sha256": "6a1c69e5585ce8e0cebbc244c35d6ff6890aa0fab100d4d1f1b54a50eb9b4621",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/tests/session-groups.test.ts",
+      "sha256": "3a20590cc542cd1c6ee98b94768f4ab2930784125bb8e99fe58d38f3bfd1a3a7",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/database/repositories/session-groups.db.js",
+      "sha256": "682b4becf1628e6e63ad972cd2624d1de46cecea4ae5c80de013a6824c4fe52f",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/database/index.js",
+      "sha256": "d392f41feda83fec69c1a9a8a73500fa676980a72ad8469eb3f31398eb49ffe5",
+      "upstreamSha256": "00a60e321f3313b426873972900974de27bb222f9b874413ad6393c75ee5f7a3"
+    },
+    {
+      "path": "dist-server/server/modules/providers/services/session-groups.service.js",
+      "sha256": "bfaddea94882f4462b01908bf69fec7e9ce1cafe0211002de9b3a263acb36be7",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/session-groups.routes.js",
+      "sha256": "ecc3dad01fee828c0ccb3aa0ede567ec698eec63eb4182667c1536359bd8c447",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/session-groups.test.js",
+      "sha256": "ba268cf28e0108c8e04f765be7054661898b42784c19c9fd719528feb12fec34",
+      "upstreamSha256": null
     }
   ]
 }

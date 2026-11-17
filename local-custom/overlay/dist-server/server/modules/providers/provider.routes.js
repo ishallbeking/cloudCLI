@@ -1,5 +1,6 @@
 import express, {} from 'express';
 import { codexQuestionRouter } from './list/codex/codex-question.routes.js';
+import { createSessionGroupsRouter } from './session-groups.routes.js';
 import { conversationNavigationRouter } from './conversation-navigation.routes.js';
 import { providerAuthService } from './services/provider-auth.service.js';
 import { claudeSettingsPermissionsService } from './services/claude-settings-permissions.service.js';
@@ -13,6 +14,7 @@ import { sessionConversationsSearchService } from './services/session-conversati
 import { sessionsService } from './services/sessions.service.js';
 import { AppError, asyncHandler, createApiSuccessResponse } from './../../shared/utils.js';
 const router = express.Router();
+router.use(createSessionGroupsRouter());
 router.use(codexQuestionRouter);
 router.use(conversationNavigationRouter);
 const readPathParam = (value, name) => {

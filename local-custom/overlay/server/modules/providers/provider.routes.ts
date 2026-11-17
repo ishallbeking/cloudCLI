@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import { codexQuestionRouter } from './list/codex/codex-question.routes.js';
+import { createSessionGroupsRouter } from './session-groups.routes.js';
 import { conversationNavigationRouter } from './conversation-navigation.routes.js';
 
 import { providerAuthService } from '@/modules/providers/services/provider-auth.service.js';
@@ -25,6 +26,7 @@ import type {
 import { AppError, asyncHandler, createApiSuccessResponse } from '@/shared/utils.js';
 
 const router = express.Router();
+router.use(createSessionGroupsRouter());
 router.use(codexQuestionRouter);
 router.use(conversationNavigationRouter);
 

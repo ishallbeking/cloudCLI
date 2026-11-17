@@ -2,5 +2,5 @@ export { appendFilesInputTag, buildCodexInputItems, normalizeImageDescriptors } 
 export { createCompleteMessage, createNormalizedMessage } from './utils.js';
 export type { AnyRecord, ProviderRuntimeContext, ProviderRuntimeWriter } from './types.js';
 
-// AppError: used by the providers rename coordinator to report native sync failures.
+// AppError: used by the Providers rename and group services to report actionable errors.
 export { AppError } from './utils.js';

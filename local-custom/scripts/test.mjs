@@ -6,6 +6,7 @@ const tests=[...(await fs.readdir(new URL('../tests/',import.meta.url))).filter(
   ...(await fs.readdir(new URL('../design/',import.meta.url))).filter(name=>name.startsWith('test-')&&name.endsWith('.mjs')).map(name=>'design/'+name),
   'package/dist-server/server/modules/file-tree/tests/file-tree.routes.test.js',
   'package/dist-server/server/modules/file-tree/tests/file-tree.service.test.js',
+  'package/dist-server/server/modules/providers/tests/session-groups.test.js',
   'package/dist-server/server/modules/providers/tests/session-rename.service.test.js',
   'package/dist-server/server/modules/providers/tests/provider.routes.test.js',
   'package/dist-server/server/modules/providers/tests/sessions.service.test.js',
