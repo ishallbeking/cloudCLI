@@ -121,3 +121,9 @@ node local-custom/scripts/test.mjs
 ## 上传范围
 
 仅包含代码、主题、配置模板、依赖锁文件和测试。未包含 `.env`、`env.local`、账号/认证数据库、CLI 凭据、会话记录、日志、截图、`node_modules` 或平台运行二进制。许可证沿用上游 AGPL-3.0-or-later，见仓库根目录 LICENSE。
+
+## 聊天文件链接修复（2026-11-19）
+
+本地 Markdown 链接在进入文件打开流程时只解码一次，修复中文目录、中文文件名和空格被重复编码后返回 404 的问题；文件树路径及外部网址保持原有处理。CSV、Markdown 继续在编辑器查看，PDF 使用已有预览。ZIP、Word、Excel 等二进制文件提示中增加认证下载按钮，保留原文件名与原始字节，下载失败显示原因。
+
+回归：`tests/chat-file-links.test.mjs`；只读浏览器验证：`design/review-chat-file-links.mjs`。
