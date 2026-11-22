@@ -508,3 +508,66 @@ input:not([type="checkbox"]):not([type="radio"]), select {
   .chat-composer-shell .chat-activity-enter,
   .chat-composer-shell .chat-activity-exit { animation: none; }
 }
+
+/* Phone layout: stable rows instead of wrapping independent toolbar groups. */
+@media (max-width: 639px) {
+  header.pwa-header-safe { padding: max(8px, env(safe-area-inset-top)) 10px 8px; }
+  header.pwa-header-safe > div { flex-direction: row; align-items: center; gap: 8px; }
+  header.pwa-header-safe > div > div:first-child { flex: 1 1 0; min-width: 0; gap: 6px; }
+  header.pwa-header-safe > div > div:last-child { flex: 0 1 auto; min-width: 0; max-width: 52%; margin: 0; }
+  header.pwa-header-safe .pwa-menu-button { width: 36px; height: 36px; padding: 8px; }
+  header.pwa-header-safe .scrollbar-hide:has(> [role="tablist"]) { padding-inline: 0; }
+  header.pwa-header-safe [role="tablist"] { gap: 0; padding: 2px; border-radius: 11px; }
+  header.pwa-header-safe [role="tab"] { width: 34px; height: 36px; padding: 0; justify-content: center; }
+  header.pwa-header-safe [role="tab"] > span { display: none; }
+  header.pwa-header-safe [role="tab"] > svg { width: 17px; height: 17px; }
+  header.pwa-header-safe h2 { font-size: 13px; line-height: 18px; }
+
+  .chat-messages-pane { scrollbar-gutter: auto; }
+  .chat-messages-pane > .mx-auto { padding-left: 30px; padding-right: 28px; }
+  .chat-message .prose { line-height: 1.75; overflow-wrap: anywhere; }
+  .chat-message .prose :where(pre) { padding: 12px; font-size: 12px; }
+  .chat-message .prose :where(ul, ol) { padding-left: 1.35em; }
+  .cloudcli-conversation-nav { width: 20px; }
+  .cloudcli-nav-tick { width: 20px; }
+  .cloudcli-nav-tick > span { width: 7px; }
+  .cloudcli-nav-tick:nth-child(5n+1) > span { width: 10px; }
+  .cloudcli-nav-tick.is-active > span { width: 14px; }
+  .cloudcli-nav-controls { max-width: calc(100vw - 40px); flex-wrap: wrap; justify-content: center; white-space: normal; }
+
+  .chat-composer-shell { padding: 0 8px max(8px, env(safe-area-inset-bottom)); }
+  [data-slot="prompt-input"] { border-radius: 18px; overflow: visible; }
+  [data-slot="prompt-input-textarea"] { min-height: 64px; max-height: min(24dvh, 160px); padding: 12px 14px; line-height: 1.5; }
+  [data-slot="prompt-input-body"] > .pointer-events-none > div { line-height: 1.5; }
+  [data-slot="prompt-input-footer"] {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px;
+    padding: 6px 8px 8px; min-width: 0; border-radius: 0 0 18px 18px;
+  }
+  [data-slot="prompt-input-tools"] { width: 100%; min-width: 0; gap: 4px; }
+  [data-slot="prompt-input-tools"] > button:has(> .font-medium) {
+    order: 1; margin-left: auto; border: 0; background: none; box-shadow: none;
+    padding-inline: 8px; font-size: 11px; color: hsl(var(--muted-foreground));
+  }
+  [data-slot="prompt-input-tools"] > button:has(> .font-medium) > .font-medium { color: inherit; }
+  [data-slot="prompt-input-footer"] > .ml-auto {
+    display: grid; grid-template-columns: 36px 36px minmax(0, 1fr) 36px 40px;
+    width: 100%; min-width: 0; margin: 0; gap: 6px; align-items: center;
+  }
+  [data-slot="prompt-input-footer"] button { height: 36px; min-height: 36px; }
+  [data-slot="prompt-input-footer"] > .ml-auto > button { width: 100%; min-width: 0; max-width: none; }
+  [data-slot="prompt-input-footer"] > .ml-auto > button:has(> .truncate) { justify-content: center; padding-inline: 8px; }
+  [data-slot="prompt-input-footer"] > .ml-auto > button:last-child { width: 40px; height: 40px; border-radius: 12px; }
+  [data-slot="prompt-input-footer"] .cloudcli-context-meter { width: 36px; height: 36px; }
+  [data-slot="prompt-input-footer"] .cloudcli-context-ring { width: 30px; height: 30px; }
+  .cloudcli-context-tooltip { left: -42px; right: auto; max-width: calc(100vw - 40px); }
+
+  /* Slim edge handle fits the reading gutter; retain the user's drag position. */
+  button.fixed.touch-none:has(> .lucide-chevron-left),
+  button.fixed.touch-none:has(> .lucide-chevron-right) {
+    width: 24px; height: 40px; padding: 4px; border-radius: 10px 0 0 10px;
+    z-index: 10000;
+    background: hsl(var(--card)); border-color: hsl(var(--border)); box-shadow: 0 2px 8px #0000000a;
+  }
+  button.fixed.touch-none > .lucide-chevron-left,
+  button.fixed.touch-none > .lucide-chevron-right { width: 16px; height: 16px; }
+}

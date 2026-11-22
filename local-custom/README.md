@@ -144,3 +144,10 @@ node local-custom/scripts/test.mjs
 原始日志超过 64 MiB、但规范化消息较小时可复用缓存，避免每次翻页重复解析 JSONL；规范化内容仍保留 64 MiB 预算和 LRU 淘汰，文件变化会使缓存失效。只读浏览器验证覆盖 8,231 条消息的会话：向上分页、连续滚动、首中末轮次定位、重复点击、错误重试、刷新及返回最新。首次读取和网络耗时仍随会话及网络变化。
 
 专项验证：`design/test-conversation-navigation.mjs`、`session-history-cache.service.test.ts`、`design/review-history-performance.mjs`（需要 Playwright/Chromium；可用 `CLOUDCLI_CANDIDATE_HTML` 指定候选 HTML）。
+
+
+## 手机布局（2026-11-23）
+
+小于 640px 的屏幕将标题与视图导航放在一行；导航显示图标并保留无障碍名称与提示。输入框分为附件／命令／用量与定时／上下文／模型／权限／发送两行，模型区域随宽度伸缩，避免控件整组换行错位。正文为轮次导航与设置把手预留边距；收窄设置把手并修正手机抽屉打开后关闭按钮被遮罩遮挡的问题，拖动位置仍保留。桌面继续沿用原布局。
+
+只读浏览器验证 `design/review-mobile-layout.mjs` 覆盖 320–1440px、模型和权限菜单、定时菜单、设置抽屉关闭、深色模式及缩小视口模拟键盘空间；不发送消息或提交审核。设置 `MOBILE_REVIEW_VERIFY=1` 开启交互与边界断言；可用 `MOBILE_REVIEW_CSS` 指定候选样式。实际手机键盘与浏览器工具栏仍需设备复核。
