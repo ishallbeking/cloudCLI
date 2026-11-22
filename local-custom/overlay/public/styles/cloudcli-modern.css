@@ -603,3 +603,7 @@ body:has(.cloudcli-composer-actions) [role="menu"]:not(.cloudcli-composer-action
   [data-cloudcli-actions] .cloudcli-composer-options > button:has(> .truncate) { min-width: 110px; max-width: min(44vw, 190px); font-size: 11px; }
   [data-cloudcli-actions] .cloudcli-composer-options > button:last-child { width: 34px; min-width: 34px; height: 34px; }
 }
+
+/* Stop remains pending until the server confirms; connection failures stay visible. */
+.cloudcli-stop-feedback { padding: 6px 12px; font-size: 12px; line-height: 1.5; color: hsl(var(--muted-foreground)); overflow-wrap: anywhere; }
+.cloudcli-stop-feedback[data-phase="error"] { color: hsl(var(--destructive)); }

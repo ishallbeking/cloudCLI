@@ -43,21 +43,24 @@ function CloudcliComposerActions({attachment,commands,schedule}) {
     ]}),document.body)
   ]});
 }
-function CloudcliComposerInput({children,...props}) {
+function CloudcliComposerInput({children,cloudcliSessionId,cloudcliAbortHandler,...props}) {
+  const stop=f.useSyncExternalStore(cloudcliStopControl.subscribe,()=>cloudcliStopControl.get(cloudcliSessionId),()=>null);
   const parts=f.Children.toArray(children), footer=parts.find(child=>child.type===aD);
   if (!footer) return s.jsx(eD,{...props,children});
   const footerParts=f.Children.toArray(footer.props.children);
   const tools=footerParts[0], actions=footerParts[1];
   const toolParts=f.Children.toArray(tools.props.children), actionParts=f.Children.toArray(actions.props.children);
   const attachment=toolParts[0], commands=toolParts.find(child=>child.props?.onClick && child.props?.className==='relative');
-  const schedule=actionParts[0], send=actionParts.at(-1);
+  const schedule=actionParts[0], originalSend=actionParts.at(-1);
+  const stopping=stop?.phase==='pending' && originalSend.props.onClick===cloudcliAbortHandler;
+  const send=stopping?f.cloneElement(originalSend,{disabled:true,'aria-label':'正在停止',title:'正在停止，等待确认…'}):originalSend;
   const remainingTools=toolParts.filter(child=>child!==attachment && child!==commands);
   const nextFooter=f.cloneElement(footer,{className:'cloudcli-composer-details',children:[
     f.cloneElement(tools,{key:'tools',children:remainingTools}),
     f.cloneElement(actions,{key:'options',className:'cloudcli-composer-options',children:actionParts.slice(1,-1)})
   ]});
   return s.jsx(eD,{...props,'data-cloudcli-actions':'true',children:parts.map(part=>{
-    if(part===footer)return nextFooter;
+    if(part===footer)return s.jsxs(s.Fragment,{children:[s.jsx(CloudcliStopFeedback,{sessionId:cloudcliSessionId,state:stop}),nextFooter]},part.key);
     if(part.type!==nD)return part;
     return f.cloneElement(part,{className:'cloudcli-composer-writing',children:[
       s.jsx('div',{className:'cloudcli-composer-leading',children:s.jsx(CloudcliComposerActions,{attachment,commands,schedule})},'plus'),
