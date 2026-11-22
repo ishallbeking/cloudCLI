@@ -575,10 +575,10 @@ input:not([type="checkbox"]):not([type="radio"]), select {
 /* One writing surface: actions on the left, text in the middle, send on the right. */
 [data-cloudcli-actions] .cloudcli-composer-writing { display: flex; align-items: flex-end; min-width: 0; }
 [data-cloudcli-actions] .cloudcli-composer-text { position: relative; min-width: 0; flex: 1 1 0; }
-[data-cloudcli-actions] .cloudcli-composer-text [data-slot="prompt-input-textarea"] { min-height: 64px; padding: 18px 6px 14px; }
+[data-cloudcli-actions] .cloudcli-composer-text [data-slot="prompt-input-textarea"] { min-height: 44px; padding: 10px 6px; line-height: 24px; }
 [data-cloudcli-actions] .cloudcli-composer-text [data-slot="prompt-input-textarea"]::placeholder { font-size: 14px; }
-[data-cloudcli-actions] .cloudcli-composer-text .pointer-events-none > div { padding: 18px 6px 14px; }
-.cloudcli-composer-leading, .cloudcli-composer-send { display: flex; align-items: center; justify-content: center; flex: 0 0 48px; padding-bottom: 10px; }
+[data-cloudcli-actions] .cloudcli-composer-text .pointer-events-none > div { padding: 10px 6px; font-size: 14px; line-height: 24px; }
+.cloudcli-composer-leading, .cloudcli-composer-send { display: flex; align-items: center; justify-content: center; flex: 0 0 48px; padding-bottom: 4px; }
 .cloudcli-composer-plus { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 11px; background: transparent; color: hsl(var(--muted-foreground)); cursor: pointer; }
 .cloudcli-composer-plus:hover, .cloudcli-composer-plus[aria-expanded="true"] { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
 [data-cloudcli-actions] .cloudcli-composer-send > button { display: grid; place-items: center; height: 36px; width: 36px; border-radius: 11px; }
@@ -595,8 +595,8 @@ input:not([type="checkbox"]):not([type="radio"]), select {
 /* The scheduler is an existing portal; keep it above its parent actions menu. */
 body:has(.cloudcli-composer-actions) [role="menu"]:not(.cloudcli-composer-actions) { z-index: 10011; }
 @media(max-width:639px) {
-  [data-cloudcli-actions] .cloudcli-composer-text [data-slot="prompt-input-textarea"] { font-size: 16px; min-height: 68px; padding: 17px 2px 13px; }
-  [data-cloudcli-actions] .cloudcli-composer-text .pointer-events-none > div { padding: 17px 2px 13px; }
+  [data-cloudcli-actions] .cloudcli-composer-text [data-slot="prompt-input-textarea"] { font-size: 16px; min-height: 44px; padding: 10px 2px; }
+  [data-cloudcli-actions] .cloudcli-composer-text .pointer-events-none > div { padding: 10px 2px; font-size: 16px; }
   [data-cloudcli-actions] .cloudcli-composer-leading, [data-cloudcli-actions] .cloudcli-composer-send { flex-basis: 44px; }
   [data-cloudcli-actions] [data-slot="prompt-input-footer"].cloudcli-composer-details { padding: 5px 8px; gap: 4px; }
   [data-cloudcli-actions] .cloudcli-composer-options { gap: 5px; }

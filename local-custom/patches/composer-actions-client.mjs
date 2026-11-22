@@ -5,7 +5,7 @@ export async function patchComposerActions(client) {
     client=client.replace(before,after);
   };
   // Keep the empty composer visually blank, with a separate accessible name.
-  replace('onInput:ee,placeholder:ye', 'onInput:ee,placeholder:"","aria-label":"消息"');
+  replace('onInput:ee,placeholder:ye', 'onInput:ee,rows:1,placeholder:"","aria-label":"消息"');
   // Only ChatComposer instantiates this input root in the pinned distribution.
   replace('s.jsxs(eD,{onSubmit:', 's.jsxs(CloudcliComposerInput,{onSubmit:');
   replace('function JYe({disabled:e,onSchedule:t})', 'function JYe({disabled:e,onSchedule:t,cloudcliActionMode:cloudcliActionMode=false})');
