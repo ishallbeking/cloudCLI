@@ -524,6 +524,56 @@
       "path": "dist-server/server/modules/providers/tests/session-groups.test.js",
       "sha256": "ba268cf28e0108c8e04f765be7054661898b42784c19c9fd719528feb12fec34",
       "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/auth/auth.service.ts",
+      "sha256": "62dbcb131603988cfd549fc89ba85bdb0325e4e32c1245681631d2c2e8d88254",
+      "upstreamSha256": "0c996a50adedc50191f4dbe6ac25f3db72ebeb9cd3f01c746d192df06e3093b3"
+    },
+    {
+      "path": "server/modules/auth/auth.routes.ts",
+      "sha256": "5410f5cdcc0a43e97593452083eb9db5bebf817de9a9d3f6c8b61da6de2ede7c",
+      "upstreamSha256": "fa7a07614c924de3e9ffd708be20d9379e1d9e2b04b6a3c27b6731cb8508f646"
+    },
+    {
+      "path": "server/modules/auth/auth.module.ts",
+      "sha256": "9ed9fdde9ece47b28388e8c73cfb755bafe9a9318ed08227e9f2b56cef7e600c",
+      "upstreamSha256": "aa684f77e34d0edb3240be4b5ef1497778dba92b9048d8f5d9bb767ca648af08"
+    },
+    {
+      "path": "server/modules/auth/tests/auth.service.test.ts",
+      "sha256": "a9ede72ee9dce04cf5d35b48859f43dc7f07bb87261b1062c83fdd4c90ff1bf4",
+      "upstreamSha256": "b4856eb045879fa157d8a990727701575fc6a4bb66df73ea82346469ec80a592"
+    },
+    {
+      "path": "server/modules/providers/tests/accounts-auth.integration.test.ts",
+      "sha256": "c2c5e258a3aad9d8a6ee5ea5c09bf55dc54ae3a490cc686121169593bd320158",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/auth/auth.service.js",
+      "sha256": "5672e639846dddc56aec4862b196a0e58d97651f30e1830aa46c63fa247a65e2",
+      "upstreamSha256": "9583231708a42aab2bedaff38710d2f5ba913bec4356e0396cf48039ee375d21"
+    },
+    {
+      "path": "dist-server/server/modules/auth/auth.routes.js",
+      "sha256": "88bb641100a40cd5c08cfdebb6688522a00037ab9adb03f5977d0dd784c38067",
+      "upstreamSha256": "47fbd373086448371938170787cdd9bf50df3e2279d9e78167ea74c506efb61a"
+    },
+    {
+      "path": "dist-server/server/modules/auth/auth.module.js",
+      "sha256": "a1f80633ebf54854410463b80bdbb5abb44ad1d133020eaef04264f010833874",
+      "upstreamSha256": "8cc531693973d1b91581101f1f36767bc9b7d4ef9d1f0ec43f8778f46d5441ba"
+    },
+    {
+      "path": "dist-server/server/modules/auth/tests/auth.service.test.js",
+      "sha256": "62ac2ae31720b8ef6cd82a1e2ba47fa0c0ff0aa8a0fd319a56db0a55b7e22e12",
+      "upstreamSha256": "086ba0c19eb4c6727392af869efcc914542174cea44155121384256ea63c085e"
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/accounts-auth.integration.test.js",
+      "sha256": "6b74064f6e8600a85f2c7d51d456531d9713e55d4b93b70b61acf3e4eadc2c41",
+      "upstreamSha256": null
     }
   ]
 }

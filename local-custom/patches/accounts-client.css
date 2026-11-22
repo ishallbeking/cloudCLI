@@ -1,0 +1,25 @@
+.cca-settings { max-width: 640px; color: hsl(var(--foreground)); }
+.cca-settings header { margin-bottom: 24px; }
+.cca-settings h2 { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+.cca-settings header p,.cca-current p,.cca-note { color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.65; margin: 0; }
+.cca-settings .cca-card { border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 20px; margin-bottom: 20px; background: hsl(var(--card)); }
+.cca-settings h3 { font-size: 15px; font-weight: 600; margin: 0 0 14px; }
+.cca-current { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-width: 0; }
+.cca-current strong { display: block; overflow-wrap: anywhere; font-size: 15px; }
+.cca-avatar { display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; flex-shrink: 0; border-radius: 50%; background: hsl(var(--muted)); }
+.cca-avatar svg { width: 20px; height: 20px; }
+.cca-button { min-height: 38px; padding: 8px 14px; border: 1px solid hsl(var(--border)); border-radius: 8px; font-size: 13px; font-weight: 500; color: hsl(var(--foreground)); background: hsl(var(--background)); cursor: pointer; }
+.cca-button:hover { background: hsl(var(--muted)); }
+.cca-button:disabled { opacity: .55; cursor: wait; }
+.cca-button:focus-visible,.cca-form input:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.cca-settings .cca-note + .cca-button { margin-top: 16px; }
+.cca-form { display: flex; flex-direction: column; gap: 16px; margin-top: 18px; }
+.cca-form label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 500; }
+.cca-form input { width: 100%; min-width: 0; height: 40px; padding: 8px 12px; border: 1px solid hsl(var(--border)); border-radius: 8px; background: hsl(var(--background)); color: hsl(var(--foreground)); font-size: 14px; font-weight: 400; }
+.cca-form .cca-button { align-self: flex-start; }
+.cca-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: transparent; }
+.cca-primary:hover { background: hsl(var(--primary) / .9); }
+.cca-error,.cca-success { margin: 0; padding: 10px 12px; border-radius: 8px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.cca-error { color: hsl(var(--destructive)); background: hsl(var(--destructive) / .07); }
+.cca-success { color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+@media(max-width:767px) { .cca-settings .cca-card { padding: 16px; } .cca-button { min-height: 42px; } }

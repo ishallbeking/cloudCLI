@@ -4,6 +4,8 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const tests=[...(await fs.readdir(new URL('../tests/',import.meta.url))).filter(name=>name.endsWith('.test.mjs')).map(name=>'tests/'+name),
   ...(await fs.readdir(new URL('../design/',import.meta.url))).filter(name=>name.startsWith('test-')&&name.endsWith('.mjs')).map(name=>'design/'+name),
+  'package/dist-server/server/modules/auth/tests/auth.service.test.js',
+  'package/dist-server/server/modules/providers/tests/accounts-auth.integration.test.js',
   'package/dist-server/server/modules/file-tree/tests/file-tree.routes.test.js',
   'package/dist-server/server/modules/file-tree/tests/file-tree.service.test.js',
   'package/dist-server/server/modules/providers/tests/session-groups.test.js',

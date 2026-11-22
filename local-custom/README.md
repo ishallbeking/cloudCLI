@@ -127,3 +127,11 @@ node local-custom/scripts/test.mjs
 本地 Markdown 链接在进入文件打开流程时只解码一次，修复中文目录、中文文件名和空格被重复编码后返回 404 的问题；文件树路径及外部网址保持原有处理。CSV、Markdown 继续在编辑器查看，PDF 使用已有预览。ZIP、Word、Excel 等二进制文件提示中增加认证下载按钮，保留原文件名与原始字节，下载失败显示原因。
 
 回归：`tests/chat-file-links.test.mjs`；只读浏览器验证：`design/review-chat-file-links.mjs`。
+
+## 网页账号与个人组（2026-11-22）
+
+“设置 → 账号”显示当前用户名，支持退出登录及注册新账号。用户名至少 3 个字符、最多 128 个字符；密码至少 6 个字符、最多 72 个 UTF-8 字节（bcrypt 限制）。注册成功后保留当前登录，退出后使用新账号登录；从设置新增的账号沿用服务器已完成的初始化，无须重复配置 CLI/Git。
+
+新增账号要求当前用户已登录，接口为 `POST /api/auth/accounts`；公开的 `/api/auth/register` 仍仅用于首次安装。不同账号的组及组内成员按账号保存，相同组名可分别使用；项目、文件和终端历史仍是服务器共享数据。退出会清理当前浏览器登录及临时状态，其他标签页同步重新加载；同一账号正常刷新 token 不重载对话。退出登录不删除账号或组。
+
+回归：`tests/accounts-client.test.mjs`、auth service 测试及 `providers/tests/accounts-auth.integration.test.ts`。`design/review-accounts.mjs` 使用临时数据库验证注册、换号、多标签页和组隔离，其他请求仅只读转发。
