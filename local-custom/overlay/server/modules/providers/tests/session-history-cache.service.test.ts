@@ -184,3 +184,20 @@ test('normalized expansion is bounded even when its compressed transcript is tin
     assert.equal(loads, 2);
   });
 });
+
+
+test('large provider logs with small normalized histories remain cached within the heap budget', async () => {
+  await withTranscriptFile(async transcriptPath => {
+    // Duplicated provider events can dwarf the messages the UI actually retains.
+    await writeFile(transcriptPath, 'x'.repeat(128 * 1024));
+    const cache = createSessionHistoryCache(64 * 1024, 8, 64 * 1024);
+    let loads = 0;
+    const loadFull = async () => { loads++; return historyResult('small normalized history'); };
+    const first = await cache.getFullHistory({sessionId: 'large-source', transcriptPath, loadFull});
+    assert.equal(await cache.getFullHistory({sessionId: 'large-source', transcriptPath, loadFull}), first);
+    assert.equal(loads, 1);
+    await appendFile(transcriptPath, 'new event');
+    await cache.getFullHistory({sessionId: 'large-source', transcriptPath, loadFull});
+    assert.equal(loads, 2);
+  });
+});

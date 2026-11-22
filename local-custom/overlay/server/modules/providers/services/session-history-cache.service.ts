@@ -34,7 +34,7 @@ import type { FetchHistoryResult } from '@/shared/types.js';
 type CacheEntry = {
   transcriptPath: string;
   mtimeMs: number;
-  /** File size in bytes; doubles as the entry's cost against the byte budget. */
+  /** Original file size, used only to validate the transcript identity. */
   size: number;
   heapCost: number;
   full: FetchHistoryResult;
@@ -49,9 +49,12 @@ type GetFullHistoryArgs = {
 };
 
 /**
- * Disk and normalized-payload budgets are both strict. A compressed or forked
- * transcript can expand far beyond its own file size. Oversized results are
- * returned to this request but never retained in the cache.
+ * Only normalized messages are retained, never the original JSONL. Charge
+ * the smaller of source size and normalized heap cost against the source
+ * budget: large rollouts often consist mainly of duplicated provider events
+ * and compressed snapshots. Their small normalized histories should not miss
+ * the cache on every page. The separate heap budget remains strict even when
+ * a tiny fork expands into a much larger normalized transcript.
  */
 const MAX_CACHED_TRANSCRIPT_FILE_BYTES = 64 * 1024 * 1024;
 const MAX_CACHE_ENTRIES = 8;
@@ -68,14 +71,14 @@ export function createSessionHistoryCache(
     let totalBytes = 0;
     let heapBytes = 0;
     for (const entry of entries.values()) {
-      totalBytes += entry.size;
+      totalBytes += Math.min(entry.size, entry.heapCost);
       heapBytes += entry.heapCost;
     }
     for (const key of entries.keys()) {
       if (totalBytes <= maxTotalFileBytes && heapBytes <= maxHeapBytes && entries.size <= maxEntries) {
         break;
       }
-      totalBytes -= entries.get(key)!.size;
+      totalBytes -= Math.min(entries.get(key)!.size, entries.get(key)!.heapCost);
       heapBytes -= entries.get(key)!.heapCost;
       entries.delete(key);
     }

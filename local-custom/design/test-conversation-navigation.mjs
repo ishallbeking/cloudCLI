@@ -45,3 +45,30 @@ test('live client preview also associates late answers with their original quest
  assert.equal(result[0].answer,'延迟到达的旧答案');assert.equal(result[1].answer,'新答案');
  assert.ok(!result[1].rowIds.includes('a1'));
 });
+
+function navigationHarness(responses) {
+ const values=[],calls=[];
+ const scope={AbortSignal,AbortController,setTimeout,Set,Map,JSON,
+  requestAnimationFrame:()=>1,cancelAnimationFrame:()=>{},
+  f:{useRef:value=>({current:value}),useState:value=>[value,next=>values.push(next)],useEffect:()=>{},useCallback:fn=>fn},
+  Ld:rows=>rows,
+  ht:async(url,options)=>{calls.push({url,options});const response=responses.shift();if(response instanceof Error)throw response;return{ok:true,json:async()=>({data:response})};},
+ };
+ return fs.readFile(new URL('../patches/conversation-navigation-client.js',import.meta.url),'utf8').then(source=>{
+  vm.runInNewContext(source,scope);
+  const navigation=scope.useCloudcliNavigation({sessionId:'s',active:true,messages:[{id:'native-first'}],scrollRef:{current:null},suspend:()=>{},release:()=>{},resume:()=>{}});
+  return {navigation,calls,values};
+ });
+}
+test('scrolling older uses the first stable native ID directly and repeated in-window jumps do not fetch',async()=>{
+ const {navigation,calls}=await navigationHarness([{messages:[{id:'older'},{id:'native-first'}],hasBefore:true,hasAfter:true,total:100}]);
+ await navigation.before();assert.ok(calls[0].url.includes('anchor=native-first&direction=before'));
+ assert.ok(calls[0].options.signal instanceof AbortSignal);
+ await navigation.jump('older');assert.equal(calls.length,1);
+});
+test('a request timeout releases the loading state and allows a retry',async()=>{
+ const timeout=Object.assign(new Error('timeout'),{name:'TimeoutError'});
+ const {navigation,values,calls}=await navigationHarness([timeout,{messages:[{id:'native-first'}],hasBefore:false,hasAfter:true,total:100}]);
+ await navigation.before();assert.ok(values.includes('加载超时，请重试'));assert.equal(values.at(-1),false);
+ await navigation.before();assert.equal(calls.length,2);assert.equal(values.at(-1),false);
+});

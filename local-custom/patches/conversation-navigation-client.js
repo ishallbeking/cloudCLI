@@ -3,21 +3,22 @@ function cloudcliNavigationRow(pane, id) {
   return Array.from(pane?.querySelectorAll('[data-message-row-id]') || []).find(row => row.dataset.messageRowId === id || (row.dataset.messageRowIds && JSON.parse(row.dataset.messageRowIds).includes(id)));
 }
 async function cloudcliNavigationGet(sessionId, query = '', signal) {
-  const response = await ht(`/api/providers/sessions/${encodeURIComponent(sessionId)}/navigation${query}`, {signal});
+  const timeout = AbortSignal.timeout(15000);
+  const response = await ht(`/api/providers/sessions/${encodeURIComponent(sessionId)}/navigation${query}`, {signal:signal ? AbortSignal.any([signal,timeout]) : timeout});
   if (!response.ok) throw new Error(response.status === 404 ? '消息目录已更新，请重试' : '暂时无法加载对话导航，请重试');
   return (await response.json()).data;
 }
 function useCloudcliNavigation(options) {
   const latest = f.useRef(options); latest.current = options;
   const [storedView, setView] = f.useState(null), [loading, setLoading] = f.useState(false), [error, setError] = f.useState('');
-  const requests = f.useRef({sequence:0, controller:null}), state = f.useRef(null), scrollJob = f.useRef(null);
+  const requests = f.useRef({sequence:0, controller:null}), state = f.useRef(null), scrollJob = f.useRef(null), topPagingLocked = f.useRef(false);
   const view = storedView?.sessionId === options.sessionId ? storedView : null; state.current = view;
   const cancelScroll = () => { if (scrollJob.current) cancelAnimationFrame(scrollJob.current); scrollJob.current = null; };
   f.useEffect(() => {
-    requests.current.sequence++; requests.current.controller?.abort(); cancelScroll();
-    state.current = null; setView(null); setError(''); setLoading(false);
+    requests.current.sequence++; requests.current.controller?.abort(); requests.current.controller = null; cancelScroll();
+    state.current = null; topPagingLocked.current = false; setView(null); setError(''); setLoading(false);
     if (!options.active) options.release();
-    return () => { requests.current.sequence++; requests.current.controller?.abort(); cancelScroll(); };
+    return () => { requests.current.sequence++; requests.current.controller?.abort(); requests.current.controller = null; cancelScroll(); };
   }, [options.sessionId, options.active]);
   const position = (id, oldOffset, sequence) => {
     cancelScroll(); let attempts = 0, stable = 0, last = null;
@@ -39,6 +40,11 @@ function useCloudcliNavigation(options) {
   const load = f.useCallback(async (anchor, direction = 'around') => {
     const config = latest.current, old = state.current;
     if (!config.active || !config.sessionId || !anchor || (direction !== 'around' && requests.current.controller)) return;
+    if (direction === 'around' && old?.raw.some(message => message.id === anchor)) {
+      const sequence = ++requests.current.sequence;
+      requests.current.controller?.abort(); requests.current.controller = null;
+      setLoading(false); setError(''); position(anchor, undefined, sequence); return;
+    }
     const sequence = ++requests.current.sequence;
     requests.current.controller?.abort(); const controller = new AbortController(); requests.current.controller = controller;
     cancelScroll(); config.suspend(); setLoading(true); setError('');
@@ -70,17 +76,32 @@ function useCloudcliNavigation(options) {
       }
       const next = {...data, raw, messages:Ld(raw), hasBefore, hasAfter, firstId:raw[0]?.id, lastId:raw.at(-1)?.id, sessionId:config.sessionId};
       state.current = next; setView(next); position(keepId, keepOffset, sequence);
-    } catch (failure) { if (!controller.signal.aborted && sequence === requests.current.sequence) { setError(failure.message); if (!state.current) latest.current.release(); } }
+    } catch (failure) { if (!controller.signal.aborted && sequence === requests.current.sequence) { setError(failure.name === 'TimeoutError' ? '加载超时，请重试' : failure.message); if (!state.current) latest.current.release(); } }
     finally { if (sequence === requests.current.sequence) { requests.current.controller = null; setLoading(false); } }
   }, []);
-  const before = f.useCallback(() => { const current = state.current; if (current?.hasBefore) return load(current.firstId, 'before'); }, [load]);
+  // History browsing must not queue behind the live store's latest-page bridge.
+  // A native ID remains stable while new messages are appended to the tail.
+  const before = f.useCallback(() => {
+    const current = state.current;
+    const anchor = current ? current.hasBefore && current.firstId : latest.current.messages.find(message => message.id && !message.id.startsWith('local_'))?.id;
+    if (anchor) return load(anchor, 'before');
+  }, [load]);
   const after = f.useCallback(() => { const current = state.current; if (current?.hasAfter) return load(current.lastId, 'after'); }, [load]);
+  const onScroll = f.useCallback(() => {
+    const pane = latest.current.scrollRef.current;
+    if (!pane || !state.current) return;
+    if (pane.scrollTop > 100) { topPagingLocked.current = false; return; }
+    // Programmatic anchor restoration must not recursively fetch older pages.
+    if (pane.scrollTop > 20 || topPagingLocked.current || scrollJob.current || requests.current.controller) return;
+    topPagingLocked.current = true;
+    return before();
+  }, [before]);
   const reset = f.useCallback(() => {
     requests.current.sequence++; requests.current.controller?.abort(); requests.current.controller = null; cancelScroll();
-    state.current = null; setView(null); setError(''); setLoading(false);
+    state.current = null; topPagingLocked.current = false; setView(null); setError(''); setLoading(false);
   }, []);
   const resume = f.useCallback(() => { reset(); latest.current.resume(); }, [reset]);
-  return {view,loading,error,jump:load,before,after,reset,resume,clearError:()=>setError(''),isViewing:()=>!!state.current};
+  return {view,loading,error,jump:load,before,after,onScroll,reset,resume,clearError:()=>setError(''),isViewing:()=>!!state.current};
 }
 function cloudcliLocalNavigationEntries(messages) {
   const entries = [], byId = new Map(), byTurn = new Map(); let current;
