@@ -15,6 +15,7 @@ try{
   const request=route.request(),url=new URL(request.url());
   if(url.hostname!=='10.20.64.136')return route.abort();
   if(request.method()!=='GET'&&url.pathname.startsWith('/api/'))return route.abort();
+  if(process.env.MOBILE_REVIEW_HTML&&request.isNavigationRequest())return route.fulfill({contentType:'text/html',body:await fs.readFile(process.env.MOBILE_REVIEW_HTML,'utf8')});
   if(process.env.MOBILE_REVIEW_CSS&&url.pathname==='/styles/cloudcli-modern.css')return route.fulfill({contentType:'text/css',body:await fs.readFile(process.env.MOBILE_REVIEW_CSS,'utf8')});
   return route.continue();
  });
@@ -56,7 +57,7 @@ try{
   console.log('Permission menu');
   await footer.getByRole('button',{name:/如何批准 Codex/}).click();await page.getByRole('menu').waitFor();await page.keyboard.press('Escape');
   console.log('Schedule menu');
-  await footer.getByRole('button',{name:'定时发送这条消息',exact:true}).click();await page.locator('#schedule-at').waitFor();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'添加附件、命令或定时发送',exact:true}).click();await page.getByRole('menuitem',{name:'定时发送',exact:true}).click();await page.locator('#schedule-at').waitFor();await page.keyboard.press('Escape');
   console.log('Quick settings');
   const handle=page.getByRole('button',{name:'打开设置面板',exact:true});await handle.click();await page.getByRole('button',{name:'关闭设置面板',exact:true}).waitFor();
   await page.getByRole('button',{name:'关闭设置面板',exact:true}).click();
