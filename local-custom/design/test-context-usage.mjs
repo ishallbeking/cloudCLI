@@ -17,7 +17,7 @@ test('history and usage API keep context separate from cumulative spend, includi
  const root=await mkdtemp(path.join(os.tmpdir(),'cloudcli-context-'));
  const previous=process.env.DATABASE_PATH;closeConnection();process.env.DATABASE_PATH=path.join(root,'auth.db');await initializeDatabase();
  const file=path.join(root,'rollout.jsonl'),id='context-usage-fixture';
- const event=(cumulative,current)=>JSON.stringify({type:'event_msg',payload:{type:'token_count',info:{model_context_window:200000,total_token_usage:{input_tokens:cumulative-100,output_tokens:100,total_tokens:cumulative},...(current===undefined?{}:{last_token_usage:{total_tokens:current}})}}})+'\n';
+ const event=(cumulative,current)=>JSON.stringify({type:'event_msg',payload:{type:'token_count',info:{model_context_window:200000,total_token_usage:{input_tokens:cumulative-100,output_tokens:100,total_tokens:cumulative,cached_input_tokens:100000,reasoning_output_tokens:40},...(current===undefined?{}:{last_token_usage:{total_tokens:current}})}}})+'\n';
  try{
   await writeFile(file,event(1200000,80000));sessionsDb.createSession(id,'codex',root,'context fixture');
   // The synchronizer owns this path in production; isolate that mapping here.
@@ -25,7 +25,7 @@ test('history and usage API keep context separate from cumulative spend, includi
   getConnection().prepare('UPDATE sessions SET jsonl_path = ? WHERE session_id = ?').run(file,id);
   const provider=new CodexSessionsProvider(),service=createProviderTokenUsageService();
   const initial=(await provider.fetchHistory(id)).tokenUsage,api=await service.getSessionTokenUsage(id);
-  assert.equal(initial.used,1200000);assert.equal(initial.contextUsed,80000);assert.equal(api.contextUsed,80000);assert.equal(api.used,1200000);
+  assert.equal(initial.cacheReadTokens,100000);assert.equal(api.cacheReadTokens,100000);assert.equal(initial.reasoningTokens,40);assert.equal(initial.used,1200000);assert.equal(initial.contextUsed,80000);assert.equal(api.contextUsed,80000);assert.equal(api.used,1200000);
   await appendFile(file,event(1300000,20000));
   const compacted=(await provider.fetchHistory(id)).tokenUsage;
   assert.equal(compacted.used,1300000);assert.equal(compacted.contextUsed,20000);assert.equal((await service.getSessionTokenUsage(id)).contextUsed,20000);

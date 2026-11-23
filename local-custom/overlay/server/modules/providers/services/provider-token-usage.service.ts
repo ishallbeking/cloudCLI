@@ -5,6 +5,7 @@ import path from 'node:path';
 
 import Database from 'better-sqlite3';
 import { readCodexContextUsed } from '../list/codex/codex-context-usage.js';
+import { readCodexUsageDetails } from '../list/codex/codex-token-details.js';
 
 import { sessionsDb } from '@/modules/database/index.js';
 import type { AnyRecord } from '@/shared/types.js';
@@ -40,6 +41,8 @@ type TokenUsageResult = {
   cacheReadTokens?: number;
   cacheCreationTokens?: number;
   cacheTokens?: number;
+  reasoningTokens?: number;
+  lastUsage?: ReturnType<typeof readCodexUsageDetails>;
   breakdown: {
     input: number;
     output: number;
@@ -207,6 +210,8 @@ function findCodexTokenUsage(fileContent: string): TokenUsageResult | null {
           || inputTokens + outputTokens;
       }
       return {
+        ...readCodexUsageDetails(tokenInfo.total_token_usage),
+        ...(tokenInfo.last_token_usage ? { lastUsage: readCodexUsageDetails(tokenInfo.last_token_usage) } : {}),
         used: totalTokens,
         total: readUsageNumber(tokenInfo.model_context_window) || 200_000,
         ...(readCodexContextUsed(tokenInfo.last_token_usage) !== null ? { contextUsed: readCodexContextUsed(tokenInfo.last_token_usage) } : {}),

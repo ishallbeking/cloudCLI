@@ -72,7 +72,7 @@
     },
     {
       "path": "server/modules/providers/services/provider-token-usage.service.ts",
-      "sha256": "e98e430224e1a6c45384de6d273245a5738632a56f3ab9c9cd71376a74c3d563",
+      "sha256": "bccc84cfd2f3bec4f6cecc95c608a90f8838a1677142c67a932b4bd726271573",
       "upstreamSha256": "ce75104c0a6a8586b34dc0a0353dd55f39ddada61b6a406acebd5ae16d41e9f2"
     },
     {
@@ -87,7 +87,7 @@
     },
     {
       "path": "server/modules/providers/tests/codex-runtime.test.ts",
-      "sha256": "02a87fe8ce80fe1fad02acbb702c2784dea630cda629fbc3ffd940c247b91739",
+      "sha256": "4726976800185457f93a75ecbda92a90512f9988a38bb8f0f9c2c90806e4db7f",
       "upstreamSha256": "37300805be0d059cd547bf126924878cb61610f16bc1f89287db6fbfc539d1a5"
     },
     {
@@ -122,7 +122,7 @@
     },
     {
       "path": "server/modules/providers/list/codex/codex-interactive-runtime.js",
-      "sha256": "48c1d2324f83a8ffa9288e4a013f1816b088eb0f9501afc4af12aba8c9fd1019",
+      "sha256": "59681b5df907a680ee8f700d08c8c23a026ecaeb2887b0844c8d9cffcf70090b",
       "upstreamSha256": null
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "path": "server/modules/providers/list/codex/codex-sessions.provider.ts",
-      "sha256": "20fd81e7bad6b3ca07cee41f443e75ce274aabf512530f6f811163b2b8a0c69f",
+      "sha256": "cb1d66768b68e0b09e332da677d2b05ea81afb1a86de0a9da39a8f516c4c1f0e",
       "upstreamSha256": "8c4345d43192932c1ae5e7a9da4cbe7e8fd05820fbd318d59c698a3639b3a1d6"
     },
     {
@@ -247,7 +247,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/services/provider-token-usage.service.js",
-      "sha256": "0e05c7a03e0e78ecaaf95d76f102ed0859f7b8ba3b76a1bbc1e72325e9ce191c",
+      "sha256": "736aaf6297c56a07f8dd245ff2f120f448a8da2257fd06b800e4b376cac5844a",
       "upstreamSha256": "fc4a2adca08cf952c6a4c0872c0f58f79b18a70a01c3bda96fc0e94c9d54d8ed"
     },
     {
@@ -257,7 +257,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/tests/codex-runtime.test.js",
-      "sha256": "41f841bb0f63da6537a254916965e23a17d29f91162fe2b3356b7cffe7c6e3d2",
+      "sha256": "97017b96bb812c1ea88ba1a4e6a16935061d4ffe6dcce9731fddb1d364b4a221",
       "upstreamSha256": "e29d6a4ce112bca780cc38e94bab52948f28da6661fc1f95ab7681920f984128"
     },
     {
@@ -272,7 +272,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/list/codex/codex-sessions.provider.js",
-      "sha256": "d77b51aa35855fab272c6c71f79bf1bbbdc78ef8ac0a13b06ea180be36f2aa4f",
+      "sha256": "6788dd8b306cef6af726bc709bb6f2ba18530614d4eb70253be487d8c500824d",
       "upstreamSha256": "a285b79a037d9235aa2d9639d35e2d4aab0d2841eea957f699f72a004dd29abd"
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "path": "dist-server/server/modules/providers/list/codex/codex-interactive-runtime.js",
-      "sha256": "48c1d2324f83a8ffa9288e4a013f1816b088eb0f9501afc4af12aba8c9fd1019",
+      "sha256": "59681b5df907a680ee8f700d08c8c23a026ecaeb2887b0844c8d9cffcf70090b",
       "upstreamSha256": null
     },
     {
@@ -337,12 +337,12 @@
     },
     {
       "path": "public/styles/cloudcli-modern.css",
-      "sha256": "bd77d2c7883448bd94db3b0791ce2caa487cdd1c4c28a1b09612368d7207c542",
+      "sha256": "e56045b61ce3cdb56ae097fcc1366c4dfbaf7ad43a2fac2e5154caa5cc7acecc",
       "upstreamSha256": null
     },
     {
       "path": "dist/index.html",
-      "sha256": "07faa46d28690d843e6f776d12dd4c303d3bdccabcf88beb5e3018d258e5e459",
+      "sha256": "0f1fa022de69687735873ed4ebfcf89cbc8751563543f4cf8370e0558487c75e",
       "upstreamSha256": "131ac7a339c52716b55133ef87555e348c1caf31943240d68b201ff8e3fc8946"
     },
     {
@@ -574,6 +574,46 @@
       "path": "dist-server/server/modules/providers/tests/accounts-auth.integration.test.js",
       "sha256": "6b74064f6e8600a85f2c7d51d456531d9713e55d4b93b70b61acf3e4eadc2c41",
       "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/tests/codex-token-details.test.ts",
+      "sha256": "e50063d6c09276bfffca645709ceebdb6596d182fbb875125af58ea91020a1ae",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/providers/list/codex/codex-token-details.ts",
+      "sha256": "0b0c83909e476dc040e681a2425dd7ff73e671923911e8a84104c701380efe14",
+      "upstreamSha256": null
+    },
+    {
+      "path": "server/modules/commands/commands.routes.ts",
+      "sha256": "15c2c142dbaf5a42827313e0903cf217d89d7731c9395c4887248d45f440e48e",
+      "upstreamSha256": "e52fec58c4b0c854e05d3abac14f7b3820a8e5f096716694331b8dcc6860050c"
+    },
+    {
+      "path": "server/modules/commands/tests/commands.test.ts",
+      "sha256": "eb84974c1c3f783458fecb929f4d3ac557bd06a3ae8e84f5236d4838330958f7",
+      "upstreamSha256": "e1ca7e9300b88fd5cba347d2dda962346a928385bb6552c24810fe16a8e8643c"
+    },
+    {
+      "path": "dist-server/server/modules/providers/tests/codex-token-details.test.js",
+      "sha256": "4b025dc29ab2c0239702e64ffc657ad48845ee3c965f7f2c0a592e71f81718c4",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/providers/list/codex/codex-token-details.js",
+      "sha256": "ad3db4788f12345279e45638775059d9c006a4e55009fac98db554a272383364",
+      "upstreamSha256": null
+    },
+    {
+      "path": "dist-server/server/modules/commands/commands.routes.js",
+      "sha256": "7f52fe06b7c47563f936e39821bf5af6f0bdefbfcc607921cf03f5278625c081",
+      "upstreamSha256": "ec7d2f8e1cf6815848057352d9df2fc95741e0e5e0350151c0001084c1715f69"
+    },
+    {
+      "path": "dist-server/server/modules/commands/tests/commands.test.js",
+      "sha256": "e23e4e426ede8178a72fa6e82e1a8563a499d97166f1ab7d853bc4b64e8fbf80",
+      "upstreamSha256": "4a21e984bcb0fdb350bf99ce9fe3fcb446f1f8b3c100d018a3d505ac384e7b5e"
     }
   ]
 }

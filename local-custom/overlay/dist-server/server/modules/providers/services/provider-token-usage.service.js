@@ -4,8 +4,9 @@ import os from 'node:os';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { readCodexContextUsed } from '../list/codex/codex-context-usage.js';
-import { sessionsDb } from '../../../modules/database/index.js';
-import { AppError, getOpenCodeDatabasePath } from '../../../shared/utils.js';
+import { readCodexUsageDetails } from '../list/codex/codex-token-details.js';
+import { sessionsDb } from "../../database/index.js";
+import { AppError, getOpenCodeDatabasePath } from "../../../shared/utils.js";
 /**
  * Both JSONL usage readers below only need the newest usage row, which sits at
  * or near the end of the transcript. Reading just this much of the tail keeps
@@ -139,6 +140,8 @@ function findCodexTokenUsage(fileContent) {
                     || inputTokens + outputTokens;
             }
             return {
+                ...readCodexUsageDetails(tokenInfo.total_token_usage),
+                ...(tokenInfo.last_token_usage ? { lastUsage: readCodexUsageDetails(tokenInfo.last_token_usage) } : {}),
                 used: totalTokens,
                 total: readUsageNumber(tokenInfo.model_context_window) || 200_000,
                 ...(readCodexContextUsed(tokenInfo.last_token_usage) !== null ? { contextUsed: readCodexContextUsed(tokenInfo.last_token_usage) } : {}),
@@ -419,4 +422,3 @@ export function createProviderTokenUsageService(dependencyOverrides = {}) {
  * Used by the provider routes to serve token usage from only an app session id.
  */
 export const providerTokenUsageService = createProviderTokenUsageService();
-//# sourceMappingURL=provider-token-usage.service.js.map

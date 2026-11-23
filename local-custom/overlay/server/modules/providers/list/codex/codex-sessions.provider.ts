@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readCodexContextUsed } from './codex-context-usage.js';
+import { readCodexUsageDetails } from './codex-token-details.js';
 import fsSync from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -1363,7 +1364,7 @@ async function getCodexSessionMessages(sessionId: string): Promise<CodexHistoryR
         const info = payload.info as AnyRecord;
         if (info.total_token_usage) {
           const usage = info.total_token_usage as AnyRecord;
-          tokenUsage = { used: usage.total_tokens || 0, total: info.model_context_window || 200000, contextUsed: readCodexContextUsed(info.last_token_usage) };
+          tokenUsage = { ...readCodexUsageDetails(usage), lastUsage: readCodexUsageDetails(info.last_token_usage), used: usage.total_tokens || 0, total: info.model_context_window || 200000, contextUsed: readCodexContextUsed(info.last_token_usage) };
         }
         continue;
       }

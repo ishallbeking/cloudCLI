@@ -279,3 +279,18 @@ test('cancelled native turns produce an explicit cancellation notice and aborted
   assert.ok(messages.some(m=>m.id===`codex-turn:${rpc.turnId}:interrupted`&&m.summary==='Turn interrupted'));
   assert.equal(messages.find(m=>m.kind==='complete').aborted,true);
 });
+
+test('live token events retain the same detailed counters as persisted history',async()=>{
+  const {rpc,runtime,messages,context,writer}=runtimeFixture();rpc.autoComplete=false;
+  const running=runtime.run('fixture',{sessionId:'token-details-live'},writer,context);
+  await new Promise(resolve=>setImmediate(resolve));
+  rpc.emit('message',{method:'thread/tokenUsage/updated',params:{threadId:rpc.threadId,tokenUsage:{
+    total:{inputTokens:1000,outputTokens:200,totalTokens:1200,cachedInputTokens:800,reasoningOutputTokens:120},
+    last:{inputTokens:100,outputTokens:20,totalTokens:120,cachedInputTokens:80,cacheWriteInputTokens:0,reasoningOutputTokens:12},modelContextWindow:200000
+  }}});
+  const usage=messages.find(message=>message.text==='token_budget')?.tokenBudget;
+  assert.equal(usage.used,1200);assert.equal(usage.contextUsed,120);assert.equal(usage.cacheReadTokens,800);assert.equal(usage.reasoningTokens,120);
+  assert.equal(usage.lastUsage.cacheReadTokens,80);assert.equal(usage.lastUsage.cacheCreationTokens,0);
+  rpc.emit('message',{method:'turn/completed',params:{threadId:rpc.threadId,turn:{id:rpc.turnId,status:'completed'}}});
+  await running;
+});

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { readCodexContextUsed } from './codex-context-usage.js';
+import { readCodexUsageDetails } from './codex-token-details.js';
 import { getCodexConnection } from './codex-rpc.js';
 import { appendFilesInputTag, buildCodexInputItems, normalizeImageDescriptors,
   createCompleteMessage, createNormalizedMessage } from '../../../../shared/index.js';
@@ -171,7 +172,7 @@ async function run(command, options = {}, writer, context, connect = getCodexCon
       }
       if (message.method === 'thread/tokenUsage/updated') {
         const usage = p.tokenUsage;
-        send({kind: 'status', text: 'token_budget', tokenBudget: {used: usage.total.totalTokens,
+        send({kind: 'status', text: 'token_budget', tokenBudget: {...readCodexUsageDetails(usage.total), lastUsage: readCodexUsageDetails(usage.last), used: usage.total.totalTokens,
           total: usage.modelContextWindow || 200000, contextUsed: readCodexContextUsed(usage.last), inputTokens: usage.total.inputTokens, outputTokens: usage.total.outputTokens}});
       }
       if (message.method === 'error' && !p.willRetry) {
