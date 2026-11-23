@@ -17,6 +17,7 @@ try {
  const commands=[],writes=[];
  await context.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());
+  if(process.env.TOKEN_REVIEW_CSS&&url.pathname==='/styles/cloudcli-modern.css')return route.fulfill({contentType:'text/css',body:await fs.readFile(process.env.TOKEN_REVIEW_CSS,'utf8')});
   if(request.method()==='POST'&&url.pathname==='/api/commands/execute'){
    const body=request.postDataJSON();
    if(body.commandName!=='/cost'){writes.push(url.pathname);return route.abort();}
@@ -49,10 +50,33 @@ try {
   await page.setViewportSize({width,height:width>768?1000:740});await page.waitForTimeout(150);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   assert.equal(await section.evaluate(node=>node.scrollWidth>node.clientWidth),false);
+  const body=page.locator('.settings-content-enter').filter({has:page.locator('.cloudcli-token-details')});
+  const geometry=await body.evaluate(node=>({height:node.clientHeight,scrollHeight:node.scrollHeight,overflow:getComputedStyle(node).overflowY}));
+  assert.equal(geometry.overflow,'auto');assert.ok(geometry.scrollHeight>geometry.height,'Fixture should overflow the usage body');
+  await body.evaluate(node=>{node.scrollTop=0;});
+  const bounds=await body.boundingBox();await page.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
+  await page.mouse.wheel(0,2000);await page.waitForTimeout(300);
+  assert.ok(await body.evaluate(node=>node.scrollTop>0),'Wheel must scroll usage');
+  await body.evaluate(node=>{node.scrollTop=node.scrollHeight;});
+  await page.waitForTimeout(100);
+  const end=await body.evaluate(node=>({bottom:node.getBoundingClientRect().bottom,top:node.getBoundingClientRect().top,modelBottom:node.querySelector('.cloudcli-token-model').getBoundingClientRect().bottom,modelTop:node.querySelector('.cloudcli-token-model').getBoundingClientRect().top}));
+  assert.ok(end.modelBottom<=end.bottom+1&&end.modelTop>=end.top,'Last detail must be visible at scroll end');
+  if(width===393){
+   await body.evaluate(node=>{node.scrollTop=0;});
+   const cdp=await context.newCDPSession(page);
+   const x=Math.round(bounds.x+bounds.width/2),y=Math.round(bounds.y+bounds.height*.8);
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+   for(let step=1;step<=8;step++){
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:Math.round(y-step*Math.min(30,bounds.height/12))}]});
+    await page.waitForTimeout(20);
+   }
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(300);
+   assert.ok(await body.evaluate(node=>node.scrollTop>0),'Finger swipe must scroll usage');await cdp.detach();
+  }
   await page.screenshot({path:'/tmp/cloudcli-token-details-'+width+'.png'});
  }
  await page.reload({waitUntil:'domcontentloaded'});await page.locator('[data-cloudcli-actions]').waitFor();await page.waitForTimeout(1500);await open();
  assert.equal(typeof commands.at(-1)?.data?.tokenUsage?.cacheReadTokens,'number','Refresh must retain details');
  assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
- console.log(JSON.stringify({passed:true,checks:['usage-api-to-cost','cached-input','hit-rate','cumulative-vs-last','no-double-counting','320-1440-layout','refresh-retains-details','no-chat-writes']}));
+ console.log(JSON.stringify({passed:true,checks:['usage-api-to-cost','cached-input','hit-rate','cumulative-vs-last','no-double-counting','320-1440-layout','wheel-scroll','touch-scroll','last-detail-reachable','refresh-retains-details','no-chat-writes']}));
 } finally {await browser.close();}

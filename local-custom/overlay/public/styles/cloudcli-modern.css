@@ -610,6 +610,12 @@ body:has(.cloudcli-composer-actions) [role="menu"]:not(.cloudcli-composer-action
 
 /* Detailed usage cards keep numeric columns readable on small screens. */
 .cloudcli-token-details { display: grid; gap: 14px; }
+/* The command dialog fixes its header/footer; only the usage body scrolls. */
+.settings-content-enter:has(> .cloudcli-token-details) {
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
 .cloudcli-token-details section { border: 1px solid hsl(var(--border)); border-radius: 14px; overflow: hidden; }
 .cloudcli-token-details h3 { padding: 10px 14px; font-size: 12px; font-weight: 600; background: hsl(var(--muted) / .5); }
 .cloudcli-token-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 14px; border-top: 1px solid hsl(var(--border) / .6); font-size: 13px; }
